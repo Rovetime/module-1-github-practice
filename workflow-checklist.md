@@ -20,4 +20,4 @@
 
 ## Work Session Notes
 
-[COMPLETE THIS: Add at least one sentence before practicing `git stash`.]
+The Old Gods will be remembered.
