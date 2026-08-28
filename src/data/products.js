@@ -35,10 +35,18 @@ const products = [
   accent: '#F58E3C',
 },
 
-
   // Add one original product below.
   // Use image: require('../assets/images/your-drop.png')
   // Choose your own unique id, name, category, price, and quantity.
+  {
+  id: 'drop-004',
+  image: require('../assets/images/your-drop.png'),
+  name: 'Metro Canvas 04',
+  category: 'Everyday',
+  price: 98,
+  quantity: 7,
+  accent: '#EB569E',
+},
 ];
 
 export default products;
