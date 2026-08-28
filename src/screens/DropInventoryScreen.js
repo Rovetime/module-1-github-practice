@@ -9,7 +9,13 @@ export default function DropInventoryScreen() {
   const [savedIds, setSavedIds] = useState([]);
 
   // Add the toggleSaved function from README.md below.
-
+const toggleSaved = (productId) => {
+  setSavedIds((currentIds) =>
+    currentIds.includes(productId)
+      ? currentIds.filter((id) => id !== productId)
+      : [...currentIds, productId]
+  );
+};
 
   return (
     <ScrollView
@@ -32,7 +38,7 @@ export default function DropInventoryScreen() {
 
         <View style={styles.statCard}>
           {/* Display the number of saved product ids below. */}
-          <Text style={styles.statValue}></Text>
+         <Text style={styles.statValue}>{savedIds.length}</Text>
           <Text style={styles.statLabel}>SAVED</Text>
         </View>
       </View>
@@ -41,6 +47,19 @@ export default function DropInventoryScreen() {
 
       {/* Use products.map() below to display one ProductCard for each product. */}
       <View>
+        {products.map((product) => (
+  <ProductCard
+    key={product.id}
+    image={product.image}
+    name={product.name}
+    category={product.category}
+    price={product.price}
+    quantity={product.quantity}
+    accent={product.accent}
+    saved={savedIds.includes(product.id)}
+    onToggleSaved={() => toggleSaved(product.id)}
+  />
+))}
 
 
       </View>
