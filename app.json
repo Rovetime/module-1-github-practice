@@ -1,14 +1,9 @@
 {
   "expo": {
-    "name": "Campus Connect",
-    "slug": "campus-connect",
+    "name": "Drop Inventory",
+    "slug": "drop-inventory",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "dark",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ]
+    "userInterfaceStyle": "light"
   }
 }

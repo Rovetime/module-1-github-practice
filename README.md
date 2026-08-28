@@ -1,648 +1,458 @@
-# Module 1 Assignment 2: Campus Connect
+# Module 2 Assignment 1
+# Drop Inventory — Modern Product Catalog
 
 ## Objective
 
-Build a colorful React Native student-life app by following the code exactly as shown. This is your first React Native assignment, so **you are not expected to invent React code on your own**.
+Build a polished React Native product-drop inventory app using reusable components, props, state, JavaScript data, `.map()`, conditional stock labels, local images, `Pressable`, and `StyleSheet`.
 
-Follow each step in order:
+This assignment is **plug-and-play**. You are not expected to invent React Native syntax. Follow each step in order:
 
 **Read → Type/Paste → Save → Test → Commit**
 
-Do not skip ahead.
+---
+
+## What You Are Building
+
+You will build **Drop Inventory**, a modern product catalog inspired by the clean visual patterns used in real shopping and retail apps.
+
+The finished app will include:
+
+- Product drop header
+- Product count
+- Saved-item count
+- Three provided products
+- One original student-created product
+- Reusable `ProductCard`
+- Product images
+- Price and stock information
+- Save/Saved interaction
+- Props
+- State
+- `.map()`
+- Conditional UI
 
 ---
 
-# Before You Begin
+## Props vs State
 
-Open the project in GitHub Codespaces.
+This assignment reinforces an important React idea:
+
+**Props** are product information passed from the screen into `ProductCard`.
+
+Examples:
+
+```text
+name
+category
+price
+quantity
+image
+accent
+```
+
+**State** is information the app manages and changes while it is running.
+
+For this assignment:
+
+```text
+savedIds
+```
+
+is state because the user can save or unsave products.
+
+---
+
+# STEP 1 — Open the Assignment
+
+Open the repository in GitHub Codespaces.
 
 Run:
 
 ```bash
 git status
 git pull
-git switch -c feature/campus-connect
+git switch -c feature/drop-inventory
 npm install
-npx expo start --web
+npm run web
 ```
-
-You should see the purple **Campus Connect** starter screen.
 
 Do not run `git init`.
 
+Confirm that the dark **DROP INVENTORY** starter screen appears.
+
 ---
 
-# STEP 1 — Add the Section Heading
+# STEP 2 — Add the Product Data
 
 Open:
 
 ```text
-App.js
+src/data/products.js
 ```
 
-Find:
+The first product is already complete.
+
+Under the Night Shift comment, paste:
+
+```javascript
+{
+  id: 'drop-002',
+  image: require('../assets/images/night-shift.png'),
+  name: 'Night Shift 02',
+  category: 'Street',
+  price: 145,
+  quantity: 4,
+  accent: '#00C4A0',
+},
+```
+
+Under the Studio Low comment, paste:
+
+```javascript
+{
+  id: 'drop-003',
+  image: require('../assets/images/studio-low.png'),
+  name: 'Studio Low 03',
+  category: 'Lifestyle',
+  price: 110,
+  quantity: 0,
+  accent: '#F58E3C',
+},
+```
+
+Save the file.
+
+### Checkpoint
+
+`products.js` should now contain three complete product objects.
+
+### Commit
+
+```bash
+git add .
+git commit -m "Add Drop Inventory product data"
+```
+
+---
+
+# STEP 3 — Complete the Reusable ProductCard
+
+Open:
+
+```text
+src/components/ProductCard.js
+```
+
+Replace the function line with:
+
+```javascript
+export default function ProductCard({
+  image,
+  name,
+  category,
+  price,
+  quantity,
+  accent,
+  saved,
+  onToggleSaved,
+}) {
+```
+
+Change the `Image` element to:
 
 ```jsx
-{/* STEP 1: Type exactly: What's Happening? */}
-<Text style={styles.sectionTitle}></Text>
+<Image source={image} style={styles.image} />
+```
+
+Change the category line to:
+
+```jsx
+<Text style={styles.category}>{category}</Text>
+```
+
+Change the name line to:
+
+```jsx
+<Text style={styles.name}>{name}</Text>
+```
+
+Change the price line to:
+
+```jsx
+<Text style={styles.price}>${price.toFixed(2)}</Text>
+```
+
+Change the stock line to:
+
+```jsx
+<Text style={[styles.stock, { color: accent }]}>
+  {quantity === 0
+    ? 'SOLD OUT'
+    : quantity <= 5
+      ? `LOW STOCK · ${quantity}`
+      : `IN STOCK · ${quantity}`}
+</Text>
+```
+
+Change the `Pressable` opening tag to:
+
+```jsx
+<Pressable onPress={onToggleSaved} style={styles.saveButton}>
+```
+
+Change the button text to:
+
+```jsx
+<Text style={styles.saveButtonText}>
+  {saved ? 'SAVED ✓' : 'SAVE ITEM'}
+</Text>
+```
+
+### Checkpoint
+
+Your reusable card now knows how to display product information passed through props.
+
+### Commit
+
+```bash
+git add .
+git commit -m "Complete reusable ProductCard component"
+```
+
+---
+
+# STEP 4 — Add State
+
+Open:
+
+```text
+src/screens/DropInventoryScreen.js
+```
+
+You already have:
+
+```javascript
+const [savedIds, setSavedIds] = useState([]);
+```
+
+Under the comment for `toggleSaved`, paste:
+
+```javascript
+const toggleSaved = (productId) => {
+  setSavedIds((currentIds) =>
+    currentIds.includes(productId)
+      ? currentIds.filter((id) => id !== productId)
+      : [...currentIds, productId]
+  );
+};
+```
+
+This state stores the ids of products the user has saved.
+
+Now find:
+
+```jsx
+<Text style={styles.statValue}></Text>
 ```
 
 Change it to:
 
 ```jsx
-<Text style={styles.sectionTitle}>What's Happening?</Text>
+<Text style={styles.statValue}>{savedIds.length}</Text>
 ```
 
-Now find:
+### Checkpoint
 
-```javascript
-sectionTitle: {
-},
-```
-
-Add these exact properties:
-
-```javascript
-sectionTitle: {
-  color: '#FFFFFF',
-  fontSize: 28,
-  fontWeight: '900',
-  marginBottom: 16,
-},
-```
-
-Save `App.js`.
-
-### Check Your Screen
-
-You should now see **What's Happening?** in large white text under the purple header.
+The SAVED counter should display `0`.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Add Campus Connect section heading"
+git commit -m "Add saved-product state"
 ```
 
 ---
 
-# STEP 2 — Complete the Game Lounge Card
+# STEP 5 — Render Products with .map()
 
-Still in `App.js`, find the first activity card.
-
-Change:
-
-```jsx
-<Text style={styles.activityEmoji}></Text>
-```
-
-to:
-
-```jsx
-<Text style={styles.activityEmoji}>🎮</Text>
-```
-
-Change:
-
-```jsx
-<Text style={styles.activityTitle}></Text>
-```
-
-to:
-
-```jsx
-<Text style={styles.activityTitle}>Game Lounge</Text>
-```
-
-Change:
-
-```jsx
-<Text style={styles.activityDescription}></Text>
-```
-
-to:
-
-```jsx
-<Text style={styles.activityDescription}>
-  Drop in, play games, and meet other students.
-</Text>
-```
-
-Change:
-
-```jsx
-<Text style={styles.activityStatus}></Text>
-```
-
-to:
-
-```jsx
-<Text style={styles.activityStatus}>OPEN TODAY</Text>
-```
-
-Now complete the styles exactly as shown:
-
-```javascript
-activityCard: {
-  backgroundColor: '#151B31',
-  borderColor: '#2A3357',
-  borderRadius: 22,
-  borderWidth: 1,
-  marginBottom: 16,
-  padding: 20,
-},
-
-activityEmoji: {
-  fontSize: 34,
-},
-
-activityTitle: {
-  color: '#FFFFFF',
-  fontSize: 22,
-  fontWeight: '900',
-  marginTop: 12,
-},
-
-activityDescription: {
-  color: '#AEB8D4',
-  fontSize: 15,
-  lineHeight: 22,
-  marginTop: 8,
-},
-
-activityStatus: {
-  color: '#8B5CF6',
-  fontSize: 12,
-  fontWeight: '900',
-  letterSpacing: 0.8,
-  marginTop: 14,
-},
-```
-
-### Check Your Screen
-
-You should see one dark rounded card containing:
+Still in:
 
 ```text
-🎮
-Game Lounge
-Drop in, play games, and meet other students.
-OPEN TODAY
+src/screens/DropInventoryScreen.js
 ```
 
-### Commit
-
-```bash
-git add .
-git commit -m "Build and style Game Lounge card"
-```
-
----
-
-# STEP 3 — Add Study Jam and Campus Eats
-
-In `App.js`, find:
-
-```jsx
-{/* STEP 3: Paste the Study Jam card directly below this comment. */}
-```
-
-Paste:
-
-```jsx
-<View style={styles.activityCard}>
-  <Text style={styles.activityEmoji}>📚</Text>
-  <Text style={styles.activityTitle}>Study Jam</Text>
-  <Text style={styles.activityDescription}>
-    Find a study space and get ready for your next exam.
-  </Text>
-  <Text style={styles.activityStatus}>STUDY NOW</Text>
-</View>
-```
-
-Then find:
-
-```jsx
-{/* STEP 3: Paste the Campus Eats card directly below this comment. */}
-```
-
-Paste:
-
-```jsx
-<View style={styles.activityCard}>
-  <Text style={styles.activityEmoji}>🍕</Text>
-  <Text style={styles.activityTitle}>Campus Eats</Text>
-  <Text style={styles.activityDescription}>
-    Find food, snacks, and student dining options around campus.
-  </Text>
-  <Text style={styles.activityStatus}>GET FOOD</Text>
-</View>
-```
-
-### Check Your Screen
-
-You should now see three matching cards:
-
-- Game Lounge
-- Study Jam
-- Campus Eats
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add three Campus Connect activity cards"
-```
-
----
-
-# STEP 4 — Create the Reusable CampusCard Component
-
-Open:
+Find the empty `View` under:
 
 ```text
-src/components/CampusCard.js
+Latest Drop
 ```
 
-Replace the entire file with:
-
-```javascript
-import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-
-export default function CampusCard({
-  emoji,
-  title,
-  description,
-  status,
-  accent,
-  onPress,
-  isSelected,
-}) {
-  return (
-    <Pressable onPress={onPress}>
-      <View
-        style={[
-          styles.card,
-          { borderColor: isSelected ? accent : '#2A3357' },
-        ]}
-      >
-        <Text style={styles.emoji}>{emoji}</Text>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
-        <Text style={[styles.status, { color: accent }]}>{status}</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#151B31',
-    borderColor: '#2A3357',
-    borderRadius: 22,
-    borderWidth: 2,
-    marginBottom: 16,
-    padding: 20,
-  },
-
-  emoji: {
-    fontSize: 34,
-  },
-
-  title: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '900',
-    marginTop: 12,
-  },
-
-  description: {
-    color: '#AEB8D4',
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 8,
-  },
-
-  status: {
-    fontSize: 12,
-    fontWeight: '900',
-    letterSpacing: 0.8,
-    marginTop: 14,
-  },
-});
-```
-
-Save the file.
-
-### Commit
-
-```bash
-git add .
-git commit -m "Create reusable CampusCard component"
-```
-
----
-
-# STEP 5 — Use Props in App.js
-
-At the top of `App.js`, add:
-
-```javascript
-import CampusCard from './src/components/CampusCard';
-```
-
-Delete the three hard-coded `<View style={styles.activityCard}>...</View>` cards.
-
-Replace them with:
+Paste this inside it:
 
 ```jsx
-<CampusCard
-  emoji="🎮"
-  title="Game Lounge"
-  description="Drop in, play games, and meet other students."
-  status="OPEN TODAY"
-  accent="#8B5CF6"
-  isSelected={false}
-  onPress={() => {}}
-/>
-
-<CampusCard
-  emoji="📚"
-  title="Study Jam"
-  description="Find a study space and get ready for your next exam."
-  status="STUDY NOW"
-  accent="#22D3EE"
-  isSelected={false}
-  onPress={() => {}}
-/>
-
-<CampusCard
-  emoji="🍕"
-  title="Campus Eats"
-  description="Find food, snacks, and student dining options around campus."
-  status="GET FOOD"
-  accent="#FB923C"
-  isSelected={false}
-  onPress={() => {}}
-/>
-```
-
-### Check Your Screen
-
-The screen should still show the same three cards.
-
-### Commit
-
-```bash
-git add .
-git commit -m "Pass activity information with props"
-```
-
----
-
-# STEP 6 — Make the Cards Interactive
-
-`App.js` already imports `useState` and already contains:
-
-```javascript
-const [selectedActivity, setSelectedActivity] = useState(null);
-```
-
-Replace your three `CampusCard` components with:
-
-```jsx
-<CampusCard
-  emoji="🎮"
-  title="Game Lounge"
-  description="Drop in, play games, and meet other students."
-  status="OPEN TODAY"
-  accent="#8B5CF6"
-  isSelected={selectedActivity === 'Game Lounge'}
-  onPress={() => setSelectedActivity('Game Lounge')}
-/>
-
-<CampusCard
-  emoji="📚"
-  title="Study Jam"
-  description="Find a study space and get ready for your next exam."
-  status="STUDY NOW"
-  accent="#22D3EE"
-  isSelected={selectedActivity === 'Study Jam'}
-  onPress={() => setSelectedActivity('Study Jam')}
-/>
-
-<CampusCard
-  emoji="🍕"
-  title="Campus Eats"
-  description="Find food, snacks, and student dining options around campus."
-  status="GET FOOD"
-  accent="#FB923C"
-  isSelected={selectedActivity === 'Campus Eats'}
-  onPress={() => setSelectedActivity('Campus Eats')}
-/>
-```
-
-Now replace this:
-
-```jsx
-<Text style={styles.selectionText}>
-  Pick a campus activity to see what you're checking out.
-</Text>
-```
-
-with:
-
-```jsx
-<Text style={styles.selectionText}>
-  {selectedActivity
-    ? `You're checking out: ${selectedActivity}`
-    : "Pick a campus activity to see what you're checking out."}
-</Text>
-```
-
-### Check Your Screen
-
-Press all three cards.
-
-The **YOUR PICK** message should change every time.
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add interactive campus activity selection"
-```
-
----
-
-# STEP 7 — Move the Activity Information Into Data
-
-Open:
-
-```text
-src/data/campusActivities.js
-```
-
-Replace the entire file with:
-
-```javascript
-export const campusActivities = [
-  {
-    id: '1',
-    emoji: '🎮',
-    title: 'Game Lounge',
-    description: 'Drop in, play games, and meet other students.',
-    status: 'OPEN TODAY',
-    accent: '#8B5CF6',
-  },
-  {
-    id: '2',
-    emoji: '📚',
-    title: 'Study Jam',
-    description: 'Find a study space and get ready for your next exam.',
-    status: 'STUDY NOW',
-    accent: '#22D3EE',
-  },
-  {
-    id: '3',
-    emoji: '🍕',
-    title: 'Campus Eats',
-    description: 'Find food, snacks, and student dining options around campus.',
-    status: 'GET FOOD',
-    accent: '#FB923C',
-  },
-];
-```
-
-At the top of `App.js`, add:
-
-```javascript
-import { campusActivities } from './src/data/campusActivities';
-```
-
-Delete the three manually written `CampusCard` components.
-
-Replace them with:
-
-```jsx
-{campusActivities.map((activity) => (
-  <CampusCard
-    key={activity.id}
-    emoji={activity.emoji}
-    title={activity.title}
-    description={activity.description}
-    status={activity.status}
-    accent={activity.accent}
-    isSelected={selectedActivity === activity.title}
-    onPress={() => setSelectedActivity(activity.title)}
+{products.map((product) => (
+  <ProductCard
+    key={product.id}
+    image={product.image}
+    name={product.name}
+    category={product.category}
+    price={product.price}
+    quantity={product.quantity}
+    accent={product.accent}
+    saved={savedIds.includes(product.id)}
+    onToggleSaved={() => toggleSaved(product.id)}
   />
 ))}
 ```
 
-### Check Your Screen
+### Checkpoint
 
-The same three cards should still display and work.
+You should now see three polished product cards:
+
+- Apex Runner 01
+- Night Shift 02
+- Studio Low 03
+
+You should also see:
+
+- one normal in-stock label
+- one low-stock label
+- one sold-out label
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Render Campus Connect cards from data"
+git commit -m "Render product cards from data"
 ```
 
 ---
 
-# STEP 8 — Add One Original Activity
+# STEP 6 — Test Props and State
+
+Press **SAVE ITEM** on one product.
+
+The button should change to:
+
+```text
+SAVED ✓
+```
+
+The SAVED counter at the top should increase.
+
+Press the same product again.
+
+It should return to:
+
+```text
+SAVE ITEM
+```
+
+and the counter should decrease.
+
+### What You Just Tested
+
+```text
+Product data → props → ProductCard
+User press → state changes → screen re-renders
+```
+
+### Commit
+
+```bash
+git add .
+git commit -m "Test saved-item interaction"
+```
+
+---
+
+# STEP 7 — Add One Original Product
 
 Open:
 
 ```text
-src/data/campusActivities.js
+src/data/products.js
 ```
 
-Below the Campus Eats object, add one activity of your own.
+Add one original product object.
 
-You may copy this example and change it:
+Use this image:
+
+```javascript
+require('../assets/images/your-drop.png')
+```
+
+Your object must include:
+
+```text
+id
+image
+name
+category
+price
+quantity
+accent
+```
+
+Example:
 
 ```javascript
 {
-  id: '4',
-  emoji: '🎤',
-  title: 'Open Mic Night',
-  description: 'Catch student performers, music, comedy, and spoken word.',
-  status: 'TONIGHT',
-  accent: '#F472B6',
+  id: 'drop-004',
+  image: require('../assets/images/your-drop.png'),
+  name: 'Metro Canvas 04',
+  category: 'Everyday',
+  price: 98,
+  quantity: 7,
+  accent: '#EB569E',
 },
 ```
 
-You may also create your own activity.
+You may change the name, category, price, quantity, and accent color.
 
-### Check Your Screen
+### Checkpoint
 
-Your fourth card should appear automatically.
+Your fourth product should appear automatically because the screen uses `.map()`.
 
-Press it and confirm the **YOUR PICK** message changes.
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add an original Campus Connect activity"
-```
-
----
-
-# STEP 9 — Final Folder Refactor
-
-Open:
-
-```text
-src/screens/HomeScreen.js
-```
-
-Replace the entire file with the completed `App.js` screen code.
-
-Then change the import paths inside `HomeScreen.js` to:
-
-```javascript
-import CampusCard from '../components/CampusCard';
-import { campusActivities } from '../data/campusActivities';
-```
-
-Make sure the function is named:
-
-```javascript
-export default function HomeScreen()
-```
-
-Now replace all of `App.js` with:
-
-```javascript
-import React from 'react';
-import HomeScreen from './src/screens/HomeScreen';
-
-export default function App() {
-  return <HomeScreen />;
-}
-```
-
-### Check Your Screen
-
-The app should look and work exactly the same.
-
-If it changed or disappeared, stop and fix the file paths before continuing.
+The Save button must also work for your original product.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Organize Campus Connect into course folders"
+git commit -m "Add original product drop"
 ```
 
 ---
 
-# Final Git Check
+# STEP 8 — Final Test
+
+Confirm:
+
+- Four product cards appear
+- All images load
+- All names and prices are correct
+- Price displays with two decimal places
+- In Stock works
+- Low Stock works
+- Sold Out works
+- Save/Saved works
+- Saved counter changes correctly
+- Original product appears
+- No red error screen appears
+
+---
+
+# STEP 9 — Push and Merge
+
+```bash
+git push -u origin feature/drop-inventory
+git switch main
+git pull
+git merge feature/drop-inventory
+git push
+```
 
 Run:
 
@@ -651,42 +461,63 @@ git status
 git log --oneline --graph --all
 ```
 
-Then push your feature branch:
-
-```bash
-git push -u origin feature/campus-connect
-```
-
-Merge it into `main`:
-
-```bash
-git switch main
-git pull
-git merge feature/campus-connect
-git push
-```
-
-Run one final check:
-
-```bash
-git status
-git log --oneline --graph --all
-```
-
 ---
 
-# Submit These Screenshots in Blackboard
+# Blackboard Submission
 
 Upload screenshots only.
 
-1. Completed Campus Connect app
-2. One selected activity showing in the **YOUR PICK** panel
-3. Your original fourth activity
-4. Completed project folders visible in Codespaces
-5. `CampusCard.js`
-6. `campusActivities.js`
-7. `git status` showing a clean working tree
-8. `git log --oneline --graph --all`
-9. GitHub showing completed files on `main`
+Submit:
+
+1. Completed Drop Inventory application
+2. Product card showing **LOW STOCK**
+3. Product card showing **SOLD OUT**
+4. One product showing **SAVED ✓**
+5. SAVED counter showing at least `1`
+6. Original student-created product
+7. `ProductCard.js`
+8. `products.js`
+9. `git status` showing a clean working tree
+10. `git log --oneline --graph --all`
+11. GitHub showing the completed files on `main`
 
 **Do not submit a repository link.**
+
+---
+
+# Grading Rubric — 100 Points
+
+| Criteria | Points |
+|---|---:|
+| Modern Drop Inventory interface completed | 10 |
+| Product data completed correctly | 10 |
+| Reusable `ProductCard` completed | 15 |
+| Props display correct product information | 15 |
+| State and Save/Saved interaction work | 15 |
+| `.map()` and React keys used correctly | 10 |
+| Stock-status UI works correctly | 10 |
+| Original product added | 5 |
+| Git workflow completed | 5 |
+| Required Blackboard screenshots submitted | 5 |
+
+---
+
+# Reference Links
+
+React Native – React Fundamentals  
+https://reactnative.dev/docs/intro-react
+
+React Native – Core Components and APIs  
+https://reactnative.dev/docs/components-and-apis
+
+React Native – Image  
+https://reactnative.dev/docs/image
+
+React Native – Pressable  
+https://reactnative.dev/docs/pressable
+
+React Native – StyleSheet  
+https://reactnative.dev/docs/stylesheet
+
+GitHub – Using Source Control in Codespaces  
+https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace
