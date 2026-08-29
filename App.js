@@ -1,7 +1,7 @@
 import React from 'react';
-import DropInventoryScreen from './src/screens/DropInventoryScreen';
+import CreatorQueueScreen from './src/screens/CreatorQueueScreen';
 
 export default function App() {
-  // Load the completed Module 2 screen below.
-  return <DropInventoryScreen />;
+  // Display the CreatorQueueScreen below.
+  return <CreatorQueueScreen />;
 }
