@@ -23,22 +23,59 @@ useEffect(() => {
   return () => clearTimeout(timer);
 }, []);
   // TODO 5: Complete the filtered product list from Step 5.
-  const visibleProducts = products;
+const visibleProducts = useMemo(() => {
+  const clean = query.trim().toLowerCase();
 
-  function handleAddToCart(id) {
-    // TODO 6: Update cartIds using the code from Step 6.
+  if (!clean) {
+    return products;
   }
 
-  function renderProduct({ item }) {
-    // TODO 7: Return ProductResult with the props from Step 7.
-    return null;
-  }
+  return products.filter((product) =>
+    product.name.toLowerCase().includes(clean)
+  );
+}, [query]);
+
+function handleAddToCart(id) {
+  setCartIds((current) =>
+    current.includes(id)
+      ? current
+      : [...current, id]
+  );
+}
+
+function renderProduct({ item }) {
+  return (
+    <ProductResult
+      {...item}
+      inCart={cartIds.includes(item.id)}
+      onAddToCart={handleAddToCart}
+    />
+  );
+}
+
 
   return (
     <SafeAreaView style={styles.screen}>
       <MarketplaceHeader query={query} setQuery={setQuery} cartCount={cartIds.length} />
       {/* TODO 8: Replace this section with the loading/FlatList code from Step 8. */}
-      <SearchTools resultCount={products.length} />
+      {loading ? (
+  <LoadingState />
+) : (
+  <FlatList
+    data={visibleProducts}
+    keyExtractor={(item) => item.id}
+    ListHeaderComponent={
+      <SearchTools resultCount={visibleProducts.length} />
+    }
+    ListEmptyComponent={<EmptyResults />}
+    renderItem={renderProduct}
+    contentContainerStyle={
+      visibleProducts.length === 0
+        ? styles.emptyList
+        : null
+    }
+  />
+)}
       <BottomNavigation cartCount={cartIds.length} />
     </SafeAreaView>
   );

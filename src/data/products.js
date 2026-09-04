@@ -59,6 +59,16 @@ const products = [
   delivery: 'FREE delivery Friday',
   imageSource: require('../assets/images/backpack.png'),
 },
+{
+  id: 'product-107',
+  name: 'Hollow Manor: Mystery Board Game',
+  rating: 4.7,
+  reviewCount: 184,
+  price: 29.99,
+  quantity: 15,
+  delivery: 'FREE delivery Friday',
+  imageSource: require('../assets/images/backpack.png'),
+},
 ];
 
 export default products;
