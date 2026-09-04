@@ -1,29 +1,11 @@
-# Module 2 Assignment 2
-# Creator Queue — Interactive Content Planner
+# Module 3 Assignment 1
+# Marketplace Search — Production Shopping Results
 
 ## Objective
 
-Build a guided React Native application called **Creator Queue** that allows a content creator or social media team to add, display, filter, advance, and remove planned content.
-
-This assignment reinforces:
-
-- `useState`
-- `TextInput`
-- `Pressable`
-- Props
-- Parent/child components
-- Arrays of objects
-- Unique IDs
-- React keys
-- `.map()`
-- `.filter()`
-- Conditional rendering
-- Shared state
-- Event handlers
+Complete a guided React Native marketplace screen that closely follows the **layout, density, and interaction pattern of a major shopping app**. You will use local product images, reusable components, `FlatList`, `Pressable`, state, loading feedback, empty results, and stable IDs.
 
 This assignment is **plug-and-play**. You are not expected to invent unfamiliar React Native syntax.
-
-Follow:
 
 **Read → Type/Paste → Save → Test → Commit**
 
@@ -31,690 +13,354 @@ Follow:
 
 ## Industry Scenario
 
-You are a junior mobile developer working with a digital content team. The team needs a lightweight mobile dashboard to track social content before it is published.
+You are a junior mobile developer for an online retailer. The design team has already created a production-style shopping shell. Your job is to connect the data and interaction without changing the supplied visual system.
 
-Each content item moves through:
-
-```text
-Draft → Scheduled → Published
-```
-
-The app must allow the team to create content ideas, filter the queue by status, move posts through the workflow, and remove completed published items.
+The screen must keep its compact search header, product rows, prices, ratings, delivery text, availability messages, cart count, and bottom navigation.
 
 ---
 
 ## Props vs State
 
-**Props** are values passed into reusable child components.
-
-Examples in `PostCard`:
+**Props** pass product information into `ProductResult`:
 
 ```text
-title
-platform
-type
-status
+id, name, rating, reviewCount, price, quantity, delivery, imageSource
 ```
 
-**State** is data managed by the application that can change.
-
-Examples:
+**State** remembers values that change:
 
 ```text
-posts
-selectedFilter
-title
-platform
-type
-error
+query, cartIds, loading
 ```
-
-When state changes, React updates the interface.
 
 ---
 
 # STEP 1 — Open the Project
 
-Open the repository in GitHub Codespaces.
-
-Run:
-
 ```bash
 git status
 git pull
-git switch -c feature/creator-queue
+git switch -c feature/marketplace-search
 npm install
 npm run web
 ```
 
-Do not run `git init`.
+Do **not** run `git init`.
+
+### Checkpoint
+
+The app should open with the marketplace header and bottom navigation. The product list is not complete yet.
 
 ---
 
-# STEP 2 — Add the Third Starter Post
+# STEP 2 — Add the Original Product
 
 Open:
 
 ```text
-src/data/starterPosts.js
+src/data/products.js
 ```
 
-Under the comment for the third starter post, paste:
+Replace the `TODO 1` comment with:
 
 ```javascript
 {
-  id: 'post-1003',
-  title: 'Game Night Highlights',
-  platform: 'YouTube',
-  type: 'Short',
-  status: 'Published',
+  id: 'product-106',
+  name: 'Metro Tech Commuter Backpack',
+  rating: 4.6,
+  reviewCount: 529,
+  price: 74.99,
+  quantity: 8,
+  delivery: 'FREE delivery Friday',
+  imageSource: require('../assets/images/backpack.png'),
 },
 ```
 
-Save the file.
+### Commit
+
+```bash
+git add .
+git commit -m "Add original marketplace product"
+```
+
+---
+
+# STEP 3 — Complete Product Availability and Cart Action
+
+Open:
+
+```text
+src/components/ProductResult.js
+```
+
+Replace the three starter availability lines under `TODO 2` with:
+
+```javascript
+const unavailable = quantity === 0;
+const lowStock = quantity > 0 && quantity <= 5;
+const availability = unavailable
+  ? 'Currently unavailable'
+  : lowStock
+    ? `Only ${quantity} left in stock`
+    : 'In Stock';
+```
+
+Then find `TODO 3` and change the `onPress` to:
+
+```jsx
+onPress={() => onAddToCart(id)}
+```
+
+### Checkpoint
+
+You are preparing three states:
+
+```text
+In Stock
+Only X left in stock
+Currently unavailable
+```
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Add Creator Queue starter content"
+git commit -m "Complete product availability and cart action"
 ```
 
 ---
 
-# STEP 3 — Complete the Post Composer Inputs
+# STEP 4 — Add the Loading State
 
 Open:
 
 ```text
-src/components/PostComposer.js
+src/screens/SearchResultsScreen.js
 ```
 
-Update the title input to:
+Under `TODO 4`, paste:
 
-```jsx
-<TextInput
-  value={title}
-  onChangeText={setTitle}
-  placeholder="Post title"
-  placeholderTextColor={colors.mutedText}
-  style={styles.input}
-/>
+```javascript
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setLoading(false);
+  }, 900);
+
+  return () => clearTimeout(timer);
+}, []);
 ```
 
-Update the platform input to:
+### Checkpoint
 
-```jsx
-<TextInput
-  value={platform}
-  onChangeText={setPlatform}
-  placeholder="Platform: Instagram, TikTok, YouTube..."
-  placeholderTextColor={colors.mutedText}
-  style={styles.input}
-/>
-```
+Refresh the app. The loading state should appear briefly before the results.
 
-Update the type input to:
+### Commit
 
-```jsx
-<TextInput
-  value={type}
-  onChangeText={setType}
-  placeholder="Type: Reel, Carousel, Video..."
-  placeholderTextColor={colors.mutedText}
-  style={styles.input}
-/>
+```bash
+git add .
+git commit -m "Add marketplace loading state"
 ```
 
 ---
 
-# STEP 4 — Add Form Validation
+# STEP 5 — Connect Search Filtering
 
-Inside `handleSubmit()`, paste:
+Replace the `visibleProducts` starter line under `TODO 5` with:
 
 ```javascript
-if (!title.trim() || !platform.trim() || !type.trim()) {
-  setError('Complete all three fields before adding content.');
-  return;
+const visibleProducts = useMemo(() => {
+  const clean = query.trim().toLowerCase();
+
+  if (!clean) {
+    return products;
+  }
+
+  return products.filter((product) =>
+    product.name.toLowerCase().includes(clean)
+  );
+}, [query]);
+```
+
+### Checkpoint
+
+Type `keyboard` in the search box. Only the keyboard result should remain.
+
+Type a word that matches nothing. The empty state will appear after Step 8.
+
+### Commit
+
+```bash
+git add .
+git commit -m "Filter marketplace search results"
+```
+
+---
+
+# STEP 6 — Add Cart State
+
+Inside `handleAddToCart(id)`, replace `TODO 6` with:
+
+```javascript
+setCartIds((current) =>
+  current.includes(id)
+    ? current
+    : [...current, id]
+);
+```
+
+### Checkpoint
+
+The cart count will update after the product rows are connected in the next step.
+
+### Commit
+
+```bash
+git add .
+git commit -m "Add marketplace cart state"
+```
+
+---
+
+# STEP 7 — Connect ProductResult
+
+Replace `renderProduct()` with:
+
+```javascript
+function renderProduct({ item }) {
+  return (
+    <ProductResult
+      {...item}
+      inCart={cartIds.includes(item.id)}
+      onAddToCart={handleAddToCart}
+    />
+  );
 }
 ```
 
-Below that, paste:
-
-```javascript
-onAdd({
-  title: title.trim(),
-  platform: platform.trim(),
-  type: type.trim(),
-});
-```
-
-Then paste:
-
-```javascript
-setTitle('');
-setPlatform('');
-setType('');
-setError('');
-```
-
-Below the third `TextInput`, add:
-
-```jsx
-{error ? <Text style={styles.error}>{error}</Text> : null}
-```
-
 ### Checkpoint
 
-Try submitting an empty form.
-
-You should see the error message.
-
-Then complete all three fields and submit again.
-
-### Commit
-
-```bash
-git add .
-git commit -m "Build and validate Creator Queue composer"
-```
+The reusable component now receives one product object at a time.
 
 ---
 
-# STEP 5 — Complete PostCard Props
+# STEP 8 — Display Products with FlatList
 
-Open:
+Inside the `SafeAreaView`, keep `MarketplaceHeader` and `BottomNavigation`.
 
-```text
-src/components/PostCard.js
-```
-
-Replace the function line with:
-
-```javascript
-export default function PostCard({
-  id,
-  title,
-  platform,
-  type,
-  status,
-  onAdvance,
-  onDelete,
-}) {
-```
-
-Directly under the function line, add:
-
-```javascript
-const statusColor =
-  status === 'Published'
-    ? colors.published
-    : status === 'Scheduled'
-      ? colors.warning
-      : colors.primary;
-```
-
-Change the platform line to:
+Replace the temporary `SearchTools` line with:
 
 ```jsx
-<Text style={styles.platform}>{platform}</Text>
-```
-
-Change the status line to:
-
-```jsx
-<Text
-  style={[
-    styles.status,
-    {
-      color: statusColor,
-      backgroundColor: `${statusColor}20`,
-    },
-  ]}
->
-  {status}
-</Text>
-```
-
-Change the title line to:
-
-```jsx
-<Text style={styles.title}>{title}</Text>
-```
-
-Change the type line to:
-
-```jsx
-<Text style={styles.type}>{type}</Text>
-```
-
-Change the primary button to:
-
-```jsx
-<Pressable
-  onPress={() => onAdvance(id)}
-  style={styles.primaryButton}
-  disabled={status === 'Published'}
->
-  <Text style={styles.primaryButtonText}>
-    {status === 'Draft'
-      ? 'MOVE TO SCHEDULED'
-      : status === 'Scheduled'
-        ? 'MARK PUBLISHED'
-        : 'PUBLISHED ✓'}
-  </Text>
-</Pressable>
-```
-
-Below that button, add:
-
-```jsx
-{status === 'Published' ? (
-  <Pressable
-    onPress={() => onDelete(id)}
-    style={styles.deleteButton}
-  >
-    <Text style={styles.deleteButtonText}>
-      REMOVE FROM QUEUE
-    </Text>
-  </Pressable>
-) : null}
-```
-
-### Commit
-
-```bash
-git add .
-git commit -m "Complete reusable PostCard component"
-```
-
----
-
-# STEP 6 — Complete the Status Filter
-
-Open:
-
-```text
-src/components/StatusFilter.js
-```
-
-Inside the empty container, paste:
-
-```jsx
-{filterOptions.map((option) => {
-  const isActive = selectedFilter === option;
-
-  return (
-    <Pressable
-      key={option}
-      onPress={() => onChangeFilter(option)}
-      style={[
-        styles.button,
-        isActive && styles.activeButton,
-      ]}
-    >
-      <Text
-        style={[
-          styles.text,
-          isActive && styles.activeText,
-        ]}
-      >
-        {option}
-      </Text>
-    </Pressable>
-  );
-})}
-```
-
-### Checkpoint
-
-You should see:
-
-```text
-All
-Draft
-Scheduled
-Published
-```
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add Creator Queue status filters"
-```
-
----
-
-# STEP 7 — Add New Posts to State
-
-Open:
-
-```text
-src/screens/CreatorQueueScreen.js
-```
-
-Inside `handleAddPost`, paste:
-
-```javascript
-const newPost = {
-  id: createId(),
-  title: formValues.title,
-  platform: formValues.platform,
-  type: formValues.type,
-  status: 'Draft',
-};
-
-setPosts((currentPosts) => [
-  newPost,
-  ...currentPosts,
-]);
-```
-
-### Checkpoint
-
-Add a new content item from the form.
-
-It should appear at the top with:
-
-```text
-Draft
-```
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add new creator posts with unique IDs"
-```
-
----
-
-# STEP 8 — Advance Content Status
-
-Inside `handleAdvancePost`, paste:
-
-```javascript
-setPosts((currentPosts) =>
-  currentPosts.map((post) => {
-    if (post.id !== id) {
-      return post;
+{loading ? (
+  <LoadingState />
+) : (
+  <FlatList
+    data={visibleProducts}
+    keyExtractor={(item) => item.id}
+    ListHeaderComponent={
+      <SearchTools resultCount={visibleProducts.length} />
     }
-
-    if (post.status === 'Draft') {
-      return {
-        ...post,
-        status: 'Scheduled',
-      };
+    ListEmptyComponent={<EmptyResults />}
+    renderItem={renderProduct}
+    contentContainerStyle={
+      visibleProducts.length === 0
+        ? styles.emptyList
+        : null
     }
-
-    if (post.status === 'Scheduled') {
-      return {
-        ...post,
-        status: 'Published',
-      };
-    }
-
-    return post;
-  })
-);
-```
-
-### Checkpoint
-
-Move one post through:
-
-```text
-Draft → Scheduled → Published
-```
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add Creator Queue status workflow"
-```
-
----
-
-# STEP 9 — Delete Published Content
-
-Inside `handleDeletePost`, paste:
-
-```javascript
-setPosts((currentPosts) =>
-  currentPosts.filter((post) => post.id !== id)
-);
-```
-
-Only published cards display the remove button.
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add published-content removal"
-```
-
----
-
-# STEP 10 — Filter the Queue
-
-Replace:
-
-```javascript
-const filteredPosts = posts;
-```
-
-with:
-
-```javascript
-const filteredPosts =
-  selectedFilter === 'All'
-    ? posts
-    : posts.filter(
-        (post) => post.status === selectedFilter
-      );
-```
-
-### Commit
-
-```bash
-git add .
-git commit -m "Filter Creator Queue by status"
-```
-
----
-
-# STEP 11 — Render the Post Cards
-
-Under the comment for `filteredPosts.map()`, paste:
-
-```jsx
-{filteredPosts.map((post) => (
-  <PostCard
-    key={post.id}
-    id={post.id}
-    title={post.title}
-    platform={post.platform}
-    type={post.type}
-    status={post.status}
-    onAdvance={handleAdvancePost}
-    onDelete={handleDeletePost}
   />
-))}
-```
-
-Under the empty-list comment, paste:
-
-```jsx
-{filteredPosts.length === 0 ? (
-  <Text style={styles.emptyMessage}>
-    No content matches this filter.
-  </Text>
-) : null}
+)}
 ```
 
 ### Checkpoint
 
-Test all four filters.
+Confirm all of the following:
+
+- Product rows display.
+- Images display.
+- Price, rating, reviews, and delivery display.
+- One item shows **Only 4 left in stock**.
+- One item shows **Currently unavailable**.
+- Unavailable button is disabled.
+- Add to Cart changes to **Added to Cart**.
+- Cart counter increases.
+- Searching an impossible term shows **No results found**.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Render Creator Queue from state"
+git commit -m "Display marketplace products with FlatList"
 ```
 
 ---
 
-# STEP 12 — Add One Original Content Item
+# STEP 9 — Final Visual Check
 
-Use the app form to create one original content item.
+Do not redesign the supplied interface.
 
-Your original item must include:
+Verify that your screen still uses:
 
-- Original title
-- Platform
-- Content type
+- compact product rows
+- controlled image sizes
+- thin dividers
+- realistic product typography
+- small delivery/availability text
+- marketplace search header
+- compact Add to Cart controls
+- bottom navigation
 
-Move it from:
-
-```text
-Draft → Scheduled → Published
-```
-
-Take screenshots during the process.
-
----
-
-# STEP 13 — Final Test
-
-Confirm:
-
-- Starter content appears
-- New posts can be added
-- Empty forms are blocked
-- Unique IDs are created
-- Draft moves to Scheduled
-- Scheduled moves to Published
-- Published content can be removed
-- All filter works
-- Draft filter works
-- Scheduled filter works
-- Published filter works
-- Empty-list message works
-- Published count updates
-- No red error screen appears
+Do **not** add giant cards, random gradients, oversized shadows, neon colors, or large empty spaces.
 
 ---
 
-# STEP 14 — Push and Merge
-
-```bash
-git push -u origin feature/creator-queue
-git switch main
-git pull
-git merge feature/creator-queue
-git push
-```
-
-Run:
+# STEP 10 — Final Git Check and Merge
 
 ```bash
 git status
 git log --oneline --graph --all
+git push -u origin feature/marketplace-search
+git switch main
+git pull
+git merge feature/marketplace-search
+git push
+git status
 ```
+
+The final `git status` should show a clean working tree.
 
 ---
 
 # APA 7 Reflection
 
-Submit a **250–300 word APA 7 reflection** explaining what you learned while building Creator Queue.
+Write **250–300 words** explaining:
 
-Address:
+- why `FlatList` is appropriate for product results;
+- what `ProductResult` receives through props;
+- what is stored in state;
+- what happens when Add to Cart is pressed;
+- how `keyExtractor` uses IDs;
+- how loading, empty, low-stock, and unavailable states work;
+- one visual detail that helped the screen look more like a production shopping app;
+- one problem you solved.
 
-- What information was stored in props?
-- What information was stored in state?
-- How did the application create a unique ID for a new post?
-- How did `.map()` change one post without changing every post?
-- How did `.filter()` help with status filtering and deletion?
-- What happens to the interface when state changes?
-- What was one problem you encountered and how did you solve it?
-
-## APA 7 Formatting Requirements
-
-Use:
-
-- APA 7 student paper format
-- 1-inch margins
-- Double spacing
-- Page numbers
-- 12-point Times New Roman or another APA-approved readable font
-- APA 7 student title page
-- Paragraph indentation
-- Complete sentences
-- Professional academic writing
-
-Include a **References** page only if outside sources are used.
+Use APA 7 student-paper formatting. Include a References page only if outside sources are used.
 
 ---
 
-# Blackboard Submission
+# Screenshots to Upload in Blackboard
 
-Upload screenshots only for the application evidence.
+1. Required folder structure in Codespaces.
+2. Loading screen with `ActivityIndicator`.
+3. Completed marketplace results screen.
+4. Low-stock product.
+5. Unavailable product with disabled button.
+6. Product showing **Added to Cart** and updated cart count.
+7. Empty-results screen.
+8. Original product object in `products.js`.
+9. `ProductResult.js`.
+10. `SearchResultsScreen.js`.
+11. `git status` showing a clean working tree.
+12. `git log --oneline --graph --all`.
+13. GitHub showing completed files on `main`.
+14. Completed APA 7 reflection.
 
-Submit:
-
-1. Completed Creator Queue application
-2. New original content item in Draft status
-3. Same item in Scheduled status
-4. Same item in Published status
-5. Draft filter
-6. Scheduled filter
-7. Published filter
-8. Empty-list message
-9. `PostCard.js`
-10. `CreatorQueueScreen.js`
-11. `git status` showing a clean working tree
-12. `git log --oneline --graph --all`
-13. GitHub showing completed files on `main`
-14. Completed APA 7 reflection document
-
-**Do not submit a repository link.**
-
----
-
-# Grading Rubric — 100 Points
-
-| Criteria | Points |
-|---|---:|
-| Creator Queue interface completed | 10 |
-| Composer state and validation work | 15 |
-| New posts receive unique IDs | 10 |
-| Reusable `PostCard` uses props correctly | 15 |
-| Draft → Scheduled → Published workflow works | 15 |
-| Status filters work correctly | 10 |
-| Published content removal works | 5 |
-| `.map()`, `.filter()`, and React keys used correctly | 10 |
-| Git workflow and screenshots completed | 5 |
-| APA 7 reflection completed | 5 |
-
----
-
-# Reference Links
-
-React Native – React Fundamentals  
-https://reactnative.dev/docs/intro-react
-
-React Native – TextInput  
-https://reactnative.dev/docs/textinput
-
-React Native – Pressable  
-https://reactnative.dev/docs/pressable
-
-React Native – StyleSheet  
-https://reactnative.dev/docs/stylesheet
-
-GitHub – Using Source Control in Codespaces  
-https://docs.github.com/en/codespaces/developing-in-a-codespace/using-source-control-in-your-codespace
+Students upload **screenshots only**. Do not submit a repository link.

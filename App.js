@@ -1,7 +1,5 @@
-import React from 'react';
-import CreatorQueueScreen from './src/screens/CreatorQueueScreen';
+import SearchResultsScreen from './src/screens/SearchResultsScreen';
 
 export default function App() {
-  // Display the CreatorQueueScreen below.
-  return <CreatorQueueScreen />;
+  return <SearchResultsScreen />;
 }

@@ -1,52 +1,55 @@
-// Use the array below to store the product information for the Drop Inventory app.
 const products = [
   {
-    id: 'drop-001',
-    image: require('../assets/images/apex-runner.png'),
-    name: 'Apex Runner 01',
-    category: 'Performance',
-    price: 128,
-    quantity: 12,
-    accent: '#5669FF',
+    id: 'product-101',
+    name: 'Studio Wireless Noise-Canceling Headphones',
+    rating: 4.6,
+    reviewCount: 2418,
+    price: 89.99,
+    quantity: 18,
+    delivery: 'FREE delivery tomorrow',
+    imageSource: require('../assets/images/headphones.png'),
   },
-
-  // Add the Night Shift 02 product object below.
   {
-  id: 'drop-002',
-  image: require('../assets/images/night-shift.png'),
-  name: 'Night Shift 02',
-  category: 'Street',
-  price: 145,
-  quantity: 4,
-  accent: '#00C4A0',
-},
-
-
-
-  // Add the Studio Low 03 product object below.
-  // Use:
-{
-  id: 'drop-003',
-  image: require('../assets/images/studio-low.png'),
-  name: 'Studio Low 03',
-  category: 'Lifestyle',
-  price: 110,
-  quantity: 0,
-  accent: '#F58E3C',
-},
-
-  // Add one original product below.
-  // Use image: require('../assets/images/your-drop.png')
-  // Choose your own unique id, name, category, price, and quantity.
+    id: 'product-102',
+    name: 'Low-Profile Mechanical Keyboard with Backlight',
+    rating: 4.7,
+    reviewCount: 1084,
+    price: 129.99,
+    quantity: 4,
+    delivery: 'Delivery tomorrow',
+    imageSource: require('../assets/images/keyboard.png'),
+  },
   {
-  id: 'drop-004',
-  image: require('../assets/images/your-drop.png'),
-  name: 'Metro Canvas 04',
-  category: 'Everyday',
-  price: 98,
-  quantity: 7,
-  accent: '#EB569E',
-},
+    id: 'product-103',
+    name: 'Precision Wireless Gaming Mouse',
+    rating: 4.5,
+    reviewCount: 762,
+    price: 54.99,
+    quantity: 0,
+    delivery: 'Temporarily unavailable',
+    imageSource: require('../assets/images/mouse.png'),
+  },
+  {
+    id: 'product-104',
+    name: 'Active Smartwatch with Fitness Tracking',
+    rating: 4.4,
+    reviewCount: 1867,
+    price: 149.99,
+    quantity: 12,
+    delivery: 'FREE delivery in 2 days',
+    imageSource: require('../assets/images/watch.png'),
+  },
+  {
+    id: 'product-105',
+    name: 'Portable Bluetooth Speaker',
+    rating: 4.8,
+    reviewCount: 3271,
+    price: 69.99,
+    quantity: 3,
+    delivery: 'FREE delivery tomorrow',
+    imageSource: require('../assets/images/speaker.png'),
+  },
+  // TODO 1: Add the original product from Step 2 of the README here.
 ];
 
 export default products;

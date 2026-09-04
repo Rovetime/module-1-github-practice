@@ -1,20 +1,15 @@
 export const colors = {
-  background: '#0A0D14',
-  surface: '#141925',
-  surfaceAlt: '#1A2130',
-  border: '#283247',
-  text: '#FFFFFF',
-  mutedText: '#97A3B8',
-  primary: '#6C7CFF',
-  accent: '#2DD4BF',
-  warning: '#F59E0B',
-  danger: '#FB7185',
-  published: '#34D399',
-};
-
-export const spacing = {
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
+  background: '#ffffff',
+  text: '#0f1111',
+  muted: '#565959',
+  line: '#e7e7e7',
+  search: '#ffffff',
+  searchShell: '#d9e3e8',
+  header: '#0f2836',
+  headerAlt: '#163746',
+  accent: '#ffd814',
+  accentPressed: '#f7ca00',
+  success: '#007600',
+  warning: '#b12704',
+  unavailable: '#6f7373',
 };
