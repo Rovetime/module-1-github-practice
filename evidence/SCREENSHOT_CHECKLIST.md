@@ -1,16 +1,17 @@
-# Screenshot Checklist
+# Pulse Feed Screenshot Checklist
 
-- [ ] Folder structure in Codespaces
+- [ ] Completed Pulse Feed application
+- [ ] For You feed
+- [ ] Following feed
+- [ ] One liked post
+- [ ] One bookmarked post
+- [ ] Post with media image
 - [ ] Loading state
-- [ ] Completed marketplace screen
-- [ ] Low-stock state
-- [ ] Unavailable/disabled state
-- [ ] Added-to-Cart state + cart count
-- [ ] Empty-results state
-- [ ] Original product in products.js
-- [ ] ProductResult.js
-- [ ] SearchResultsScreen.js
+- [ ] Empty-feed state
+- [ ] Original post
+- [ ] Completed PostCard.js
+- [ ] Completed posts.js
 - [ ] Clean git status
-- [ ] git graph
-- [ ] GitHub files on main
+- [ ] git log --oneline --graph --all
+- [ ] GitHub main branch files
 - [ ] APA 7 reflection

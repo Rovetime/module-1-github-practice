@@ -1,9 +1,11 @@
-# Module 3 Assignment 1
-# Marketplace Search — Production Shopping Results
+# Module 3 Assignment 2
+# Pulse Feed — Production Social Feed
 
 ## Objective
 
-Complete a guided React Native marketplace screen that closely follows the **layout, density, and interaction pattern of a major shopping app**. You will use local product images, reusable components, `FlatList`, `Pressable`, state, loading feedback, empty results, and stable IDs.
+Complete a guided React Native application called **Pulse Feed** that recreates the structure and density of a professional social-media feed.
+
+You will use reusable components, props, state, `FlatList`, `Pressable`, `Image`, `ActivityIndicator`, stable IDs, conditional styling, and feed filtering.
 
 This assignment is **plug-and-play**. You are not expected to invent unfamiliar React Native syntax.
 
@@ -13,34 +15,59 @@ This assignment is **plug-and-play**. You are not expected to invent unfamiliar 
 
 ## Industry Scenario
 
-You are a junior mobile developer for an online retailer. The design team has already created a production-style shopping shell. Your job is to connect the data and interaction without changing the supplied visual system.
+You are a junior mobile developer working for a social media company. The design team has already created a production-style mobile feed shell.
 
-The screen must keep its compact search header, product rows, prices, ratings, delivery text, availability messages, cart count, and bottom navigation.
+Your job is to connect the post data and interaction while keeping the supplied visual system:
+
+- Compact post rows
+- Profile images
+- Display name, username, and time
+- Optional media
+- Reply, repost, like, views, and bookmark controls
+- For You / Following tabs
+- Bottom navigation
+- Loading and empty-feed feedback
 
 ---
 
 ## Props vs State
 
-**Props** pass product information into `ProductResult`:
+**Props** pass post information into `PostCard`:
 
 ```text
-id, name, rating, reviewCount, price, quantity, delivery, imageSource
+displayName
+username
+time
+content
+avatar
+imageSource
+replies
+reposts
+likes
+views
 ```
 
-**State** remembers values that change:
+**State** remembers values that change while the app runs:
 
 ```text
-query, cartIds, loading
+selectedFeed
+likedIds
+bookmarkedIds
+loading
 ```
 
 ---
 
 # STEP 1 — Open the Project
 
+Open the repository in GitHub Codespaces.
+
+Run:
+
 ```bash
 git status
 git pull
-git switch -c feature/marketplace-search
+git switch -c feature/pulse-feed
 npm install
 npm run web
 ```
@@ -49,93 +76,114 @@ Do **not** run `git init`.
 
 ### Checkpoint
 
-The app should open with the marketplace header and bottom navigation. The product list is not complete yet.
+You should see the Pulse header, feed tabs, dark production-style shell, and bottom navigation.
 
 ---
 
-# STEP 2 — Add the Original Product
+# STEP 2 — Add the Original Post
 
 Open:
 
 ```text
-src/data/products.js
+src/data/posts.js
 ```
 
 Replace the `TODO 1` comment with:
 
 ```javascript
 {
-  id: 'product-106',
-  name: 'Metro Tech Commuter Backpack',
-  rating: 4.6,
-  reviewCount: 529,
-  price: 74.99,
-  quantity: 8,
-  delivery: 'FREE delivery Friday',
-  imageSource: require('../assets/images/backpack.png'),
+  id: 'post-205',
+  displayName: 'Jordan Miles',
+  username: 'jmiles',
+  time: '3h',
+  content: 'Small UI details matter: consistent icon sizing, clean dividers, and readable spacing can completely change how polished a mobile feed feels.',
+  avatar: require('../assets/images/you.png'),
+  imageSource: null,
+  replies: 6,
+  reposts: 17,
+  likes: 144,
+  views: 5200,
+  following: true,
 },
 ```
+
+Save the file.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Add original marketplace product"
+git commit -m "Add Pulse Feed post data"
 ```
 
 ---
 
-# STEP 3 — Complete Product Availability and Cart Action
+# STEP 3 — Connect the Like Action
 
 Open:
 
 ```text
-src/components/ProductResult.js
+src/components/PostActions.js
 ```
 
-Replace the three starter availability lines under `TODO 2` with:
+Find `TODO 2`.
 
-```javascript
-const unavailable = quantity === 0;
-const lowStock = quantity > 0 && quantity <= 5;
-const availability = unavailable
-  ? 'Currently unavailable'
-  : lowStock
-    ? `Only ${quantity} left in stock`
-    : 'In Stock';
-```
-
-Then find `TODO 3` and change the `onPress` to:
+Change:
 
 ```jsx
-onPress={() => onAddToCart(id)}
+onPress={() => {}}
+```
+
+to:
+
+```jsx
+onPress={() => onLike(id)}
 ```
 
 ### Checkpoint
 
-You are preparing three states:
+The action is connected, but the Like button will not change until state is added later.
 
-```text
-In Stock
-Only X left in stock
-Currently unavailable
+### Commit
+
+```bash
+git add .
+git commit -m "Connect Pulse Feed like action"
+```
+
+---
+
+# STEP 4 — Connect the Bookmark Action
+
+In the same file, find `TODO 3`.
+
+Change:
+
+```jsx
+onPress={() => {}}
+```
+
+to:
+
+```jsx
+onPress={() => onBookmark(id)}
 ```
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Complete product availability and cart action"
+git commit -m "Connect Pulse Feed bookmark action"
 ```
 
 ---
 
-# STEP 4 — Add the Loading State
+# STEP 5 — Add the Loading State
 
 Open:
 
 ```text
-src/screens/SearchResultsScreen.js
+src/screens/FeedScreen.js
 ```
 
 Under `TODO 4`, paste:
@@ -152,86 +200,107 @@ useEffect(() => {
 
 ### Checkpoint
 
-Refresh the app. The loading state should appear briefly before the results.
+Refresh the app after the list is connected later. The loading indicator will appear briefly.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Add marketplace loading state"
+git commit -m "Add Pulse Feed loading state"
 ```
 
 ---
 
-# STEP 5 — Connect Search Filtering
+# STEP 6 — Filter the Following Feed
 
-Replace the `visibleProducts` starter line under `TODO 5` with:
+Replace the `visiblePosts` starter line under `TODO 5` with:
 
 ```javascript
-const visibleProducts = useMemo(() => {
-  const clean = query.trim().toLowerCase();
-
-  if (!clean) {
-    return products;
+const visiblePosts = useMemo(() => {
+  if (selectedFeed === 'following') {
+    return posts.filter((post) => post.following);
   }
 
-  return products.filter((product) =>
-    product.name.toLowerCase().includes(clean)
-  );
-}, [query]);
+  return posts;
+}, [selectedFeed]);
 ```
 
 ### Checkpoint
 
-Type `keyboard` in the search box. Only the keyboard result should remain.
+The **For You** feed will show all posts.
 
-Type a word that matches nothing. The empty state will appear after Step 8.
+The **Following** feed will show only records where:
+
+```javascript
+following: true
+```
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Filter marketplace search results"
+git commit -m "Add Pulse Feed tab filtering"
 ```
 
 ---
 
-# STEP 6 — Add Cart State
+# STEP 7 — Add Like State
 
-Inside `handleAddToCart(id)`, replace `TODO 6` with:
+Inside `handleLike(id)`, replace `TODO 6` with:
 
 ```javascript
-setCartIds((current) =>
+setLikedIds((current) =>
   current.includes(id)
-    ? current
+    ? current.filter((postId) => postId !== id)
     : [...current, id]
 );
 ```
 
-### Checkpoint
-
-The cart count will update after the product rows are connected in the next step.
+This allows the same post to be liked and unliked.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Add marketplace cart state"
+git commit -m "Add Pulse Feed like state"
 ```
 
 ---
 
-# STEP 7 — Connect ProductResult
+# STEP 8 — Add Bookmark State
 
-Replace `renderProduct()` with:
+Inside `handleBookmark(id)`, replace `TODO 7` with:
 
 ```javascript
-function renderProduct({ item }) {
+setBookmarkedIds((current) =>
+  current.includes(id)
+    ? current.filter((postId) => postId !== id)
+    : [...current, id]
+);
+```
+
+### Commit
+
+```bash
+git add .
+git commit -m "Add Pulse Feed bookmark state"
+```
+
+---
+
+# STEP 9 — Connect the Reusable PostCard
+
+Replace `renderPost()` with:
+
+```javascript
+function renderPost({ item }) {
   return (
-    <ProductResult
+    <PostCard
       {...item}
-      inCart={cartIds.includes(item.id)}
-      onAddToCart={handleAddToCart}
+      liked={likedIds.includes(item.id)}
+      bookmarked={bookmarkedIds.includes(item.id)}
+      onLike={handleLike}
+      onBookmark={handleBookmark}
     />
   );
 }
@@ -239,128 +308,172 @@ function renderProduct({ item }) {
 
 ### Checkpoint
 
-The reusable component now receives one product object at a time.
+One post object is now passed into one reusable `PostCard`.
 
 ---
 
-# STEP 8 — Display Products with FlatList
+# STEP 10 — Display the Feed with FlatList
 
-Inside the `SafeAreaView`, keep `MarketplaceHeader` and `BottomNavigation`.
+Find `TODO 9`.
 
-Replace the temporary `SearchTools` line with:
+Replace the placeholder comment with:
 
 ```jsx
 {loading ? (
   <LoadingState />
 ) : (
   <FlatList
-    data={visibleProducts}
+    contentContainerStyle={styles.listContent}
+    data={visiblePosts}
     keyExtractor={(item) => item.id}
-    ListHeaderComponent={
-      <SearchTools resultCount={visibleProducts.length} />
-    }
-    ListEmptyComponent={<EmptyResults />}
-    renderItem={renderProduct}
-    contentContainerStyle={
-      visibleProducts.length === 0
-        ? styles.emptyList
-        : null
-    }
+    ListEmptyComponent={EmptyFeed}
+    renderItem={renderPost}
   />
 )}
 ```
 
 ### Checkpoint
 
-Confirm all of the following:
+You should now see the complete social feed.
 
-- Product rows display.
-- Images display.
-- Price, rating, reviews, and delivery display.
-- One item shows **Only 4 left in stock**.
-- One item shows **Currently unavailable**.
-- Unavailable button is disabled.
-- Add to Cart changes to **Added to Cart**.
-- Cart counter increases.
-- Searching an impossible term shows **No results found**.
+Test:
+
+1. Press **For You**.
+2. Press **Following**.
+3. Like a post.
+4. Unlike the same post.
+5. Bookmark a post.
+6. Remove the bookmark.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Display marketplace products with FlatList"
+git commit -m "Display Pulse Feed with FlatList"
 ```
 
 ---
 
-# STEP 9 — Final Visual Check
+# STEP 11 — Test the Empty Feed
 
-Do not redesign the supplied interface.
+Temporarily change:
 
-Verify that your screen still uses:
+```javascript
+const visiblePosts = ...
+```
 
-- compact product rows
-- controlled image sizes
-- thin dividers
-- realistic product typography
-- small delivery/availability text
-- marketplace search header
-- compact Add to Cart controls
-- bottom navigation
+to:
 
-Do **not** add giant cards, random gradients, oversized shadows, neon colors, or large empty spaces.
+```javascript
+const visiblePosts = [];
+```
+
+Save.
+
+You should see:
+
+```text
+Nothing here yet
+```
+
+After the screenshot, restore the correct `useMemo()` code.
 
 ---
 
-# STEP 10 — Final Git Check and Merge
+# STEP 12 — Final Test
+
+Confirm:
+
+- Pulse Feed opens without errors.
+- Profile images display.
+- Media images display.
+- For You displays all posts.
+- Following displays only followed accounts.
+- Like changes the heart state and count.
+- Like can be removed.
+- Bookmark changes the bookmark state.
+- Bookmark can be removed.
+- Loading state appears.
+- Empty-feed state appears.
+- Your original post appears.
+- Every post has a unique ID.
+
+Run:
 
 ```bash
 git status
 git log --oneline --graph --all
-git push -u origin feature/marketplace-search
-git switch main
-git pull
-git merge feature/marketplace-search
-git push
-git status
 ```
 
-The final `git status` should show a clean working tree.
+`git status` should show a clean working tree.
+
+---
+
+# STEP 13 — Push and Merge
+
+Push the feature branch:
+
+```bash
+git push -u origin feature/pulse-feed
+```
+
+Then merge:
+
+```bash
+git switch main
+git pull
+git merge feature/pulse-feed
+git push
+```
+
+Verify:
+
+```bash
+git status
+git log --oneline --graph --all
+```
 
 ---
 
 # APA 7 Reflection
 
-Write **250–300 words** explaining:
+Submit a **250–300 word APA 7 reflection**.
 
-- why `FlatList` is appropriate for product results;
-- what `ProductResult` receives through props;
-- what is stored in state;
-- what happens when Add to Cart is pressed;
-- how `keyExtractor` uses IDs;
-- how loading, empty, low-stock, and unavailable states work;
-- one visual detail that helped the screen look more like a production shopping app;
-- one problem you solved.
+Address:
 
-Use APA 7 student-paper formatting. Include a References page only if outside sources are used.
+- What is a reusable React Native component?
+- How does `PostCard` use props?
+- What information is stored in state?
+- What happens when the user presses Like?
+- Why is `FlatList` useful for a social feed?
+- Why does each post need a unique ID?
+- How do the For You and Following feeds differ?
+- What was one problem you encountered and how did you solve it?
+
+Use APA 7 student paper format, 1-inch margins, double spacing, page numbers, an approved readable font such as 12-point Times New Roman, a student title page, paragraph indentation, complete sentences, and professional academic writing.
+
+Include a References page only if outside sources are used.
 
 ---
 
 # Screenshots to Upload in Blackboard
 
-1. Required folder structure in Codespaces.
-2. Loading screen with `ActivityIndicator`.
-3. Completed marketplace results screen.
-4. Low-stock product.
-5. Unavailable product with disabled button.
-6. Product showing **Added to Cart** and updated cart count.
-7. Empty-results screen.
-8. Original product object in `products.js`.
-9. `ProductResult.js`.
-10. `SearchResultsScreen.js`.
-11. `git status` showing a clean working tree.
-12. `git log --oneline --graph --all`.
-13. GitHub showing completed files on `main`.
-14. Completed APA 7 reflection.
+Upload screenshots of:
 
-Students upload **screenshots only**. Do not submit a repository link.
+1. Completed Pulse Feed application
+2. For You feed
+3. Following feed
+4. One liked post
+5. One bookmarked post
+6. One post displaying a media image
+7. Loading screen with `ActivityIndicator`
+8. Empty-feed message
+9. Original student-created post
+10. Completed `PostCard.js`
+11. Completed `posts.js`
+12. `git status` showing a clean working tree
+13. `git log --oneline --graph --all`
+14. GitHub showing completed files on `main`
+15. Completed APA 7 reflection document
+
+**Do not submit a repository link.**

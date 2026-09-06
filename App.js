@@ -1,5 +1,6 @@
-import SearchResultsScreen from './src/screens/SearchResultsScreen';
+import React from 'react';
+import FeedScreen from './src/screens/FeedScreen';
 
 export default function App() {
-  return <SearchResultsScreen />;
+  return <FeedScreen />;
 }
