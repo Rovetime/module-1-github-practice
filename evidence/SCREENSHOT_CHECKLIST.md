@@ -1,14 +1,15 @@
-# Order Customizer Screenshot Checklist
+# Stay Booking Screenshot Checklist
 - [ ] Completed application
-- [ ] TextInput
-- [ ] Quantity above 1
-- [ ] Modal open
-- [ ] Selected add-on
-- [ ] Updated total
-- [ ] Original add-on
-- [ ] Success feedback
-- [ ] AddOnModal.js
-- [ ] OrderCustomizerScreen.js
+- [ ] Destination TextInput
+- [ ] Guest-name TextInput
+- [ ] Guest count above 1
+- [ ] Room modal open
+- [ ] Selected room
+- [ ] Validation error
+- [ ] Successful confirmation
+- [ ] Original room
+- [ ] RoomPreferenceModal.js
+- [ ] BookingScreen.js
 - [ ] Clean git status
 - [ ] Git log graph
 - [ ] GitHub main

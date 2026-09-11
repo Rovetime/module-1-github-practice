@@ -1,17 +1,17 @@
-# Module 4 Assignment 1
-# Order Customizer — Food Delivery Interface
+# Module 4 Assignment 2
+# Stay Booking — Travel Reservation Interface
 
 ## Objective
 
-Complete a guided React Native application called **Order Customizer** for a modern food-delivery platform. The application uses reusable components, props, state, `TextInput`, `useRef()`, `ScrollView`, `Pressable`, `Modal`, conditional rendering, validation, and `StyleSheet`.
+Complete a guided React Native application called **Stay Booking** for a modern travel platform. The application uses reusable components, props, state, `TextInput`, `useRef()`, `ScrollView`, `Pressable`, `Modal`, validation, conditional rendering, and `StyleSheet`.
 
-Students will also complete a short **APA 7 reflection** explaining how input, refs, state, scrolling, and modal interfaces are used in the application.
+Students will also complete a short **APA 7 reflection** explaining how input, refs, state, validation, scrolling, and modal interfaces are used.
 
 ## Industry Scenario
 
-You are a junior mobile developer working for a food-delivery company. The design team has provided a production-style item customization screen.
+You are a junior mobile developer working for a travel-booking company. The design team has provided a production-style reservation screen.
 
-Your job is to connect the interaction while preserving the supplied mobile layout.
+Your job is to connect the form behavior while preserving the supplied mobile layout.
 
 Follow the assignment in order:
 
@@ -21,12 +21,10 @@ Follow the assignment in order:
 
 # STEP 1 — Open the Project
 
-Run:
-
 ```bash
 git status
 git pull
-git switch -c feature/order-customizer
+git switch -c feature/stay-booking
 npm install
 npm run web
 ```
@@ -35,89 +33,115 @@ Do **not** run `git init`.
 
 ### Checkpoint
 
-The item page should open with the product image, quantity control, instructions area, add-on button, and total.
+The reservation screen should open with destination and guest fields, guest controls, room preference, and booking summary.
 
 ---
 
-# STEP 2 — Add One Original Add-On
+# STEP 2 — Add One Original Room Preference
 
 Open:
 
 ```text
-src/data/menuItem.js
+src/data/roomOptions.js
 ```
 
 Replace `TODO 1` with:
 
 ```javascript
-{ id: 'addon-onion', label: 'Crispy Onions', price: 1.00 },
+{
+  id: 'room-balcony',
+  name: 'Balcony King',
+  description: 'King bed with private balcony',
+  nightlyPrice: 219,
+},
 ```
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Add Order Customizer menu data"
+git commit -m "Add Stay Booking room data"
 ```
 
 ---
 
-# STEP 3 — Complete Quantity Controls
+# STEP 3 — Complete Guest Count
 
 Open:
 
 ```text
-src/screens/OrderCustomizerScreen.js
+src/screens/BookingScreen.js
 ```
 
 Replace `TODO 4` with:
 
 ```javascript
-setQuantity((current) => Math.max(1, current - 1));
+setGuestCount((current) => Math.max(1, current - 1));
 ```
 
 Replace `TODO 5` with:
 
 ```javascript
-setQuantity((current) => current + 1);
+setGuestCount((current) => current + 1);
 ```
 
 ### Checkpoint
 
-Quantity increases and never drops below 1.
+Guest count can increase but cannot drop below 1.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Complete quantity controls"
+git commit -m "Add guest count controls"
 ```
 
 ---
 
 # STEP 4 — Add useRef Input Focus
 
-Under the state variables, replace `TODO 3` with:
+Replace `TODO 3` with:
 
 ```javascript
-const instructionsRef = useRef(null);
+const destinationRef = useRef(null);
+const guestNameRef = useRef(null);
 ```
 
-Inside `TextInput`, replace `TODO 8` with:
+Connect the destination input:
 
 ```jsx
-ref={instructionsRef}
+ref={destinationRef}
 ```
 
-Replace the empty `onPress` under `TODO 9` with:
+Change:
 
 ```jsx
-onPress={() => instructionsRef.current?.focus()}
+onSubmitEditing={() => {}}
+```
+
+to:
+
+```jsx
+onSubmitEditing={() => guestNameRef.current?.focus()}
+```
+
+Connect the guest-name input:
+
+```jsx
+ref={guestNameRef}
+```
+
+Change the Focus Destination button to:
+
+```jsx
+onPress={() => destinationRef.current?.focus()}
 ```
 
 ### Checkpoint
 
-Press **Tap to focus instructions**. The special-instructions field should receive focus.
+- Press **Focus destination**.
+- Press Enter/Next from the destination field.
+- Focus should move to the guest-name field.
 
 ### Commit
 
@@ -128,112 +152,140 @@ git commit -m "Add useRef input focus"
 
 ---
 
-# STEP 5 — Add Add-On State
+# STEP 5 — Open the Room Modal
 
-Inside `handleToggleAddOn(id)`, replace `TODO 6` with:
+The screen already opens `RoomPreferenceModal`.
 
-```javascript
-setSelectedAddOns((current) =>
-  current.includes(id)
-    ? current.filter((itemId) => itemId !== id)
-    : [...current, id]
-);
-```
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add selected add-on state"
-```
+Your job is to complete the room list in the next step.
 
 ---
 
-# STEP 6 — Build the Add-On Modal
+# STEP 6 — Build the Room Preference Modal
 
 Open:
 
 ```text
-src/components/AddOnModal.js
+src/components/RoomPreferenceModal.js
 ```
 
 Replace `TODO 2` with:
 
 ```jsx
-{addOns.map((item) => (
-  <OptionRow
-    key={item.id}
-    label={item.label}
-    price={item.price}
-    selected={selectedIds.includes(item.id)}
-    onPress={() => onToggle(item.id)}
-  />
+{rooms.map((room) => (
+  <Pressable
+    key={room.id}
+    onPress={() => {
+      onSelect(room.id);
+      onClose();
+    }}
+    style={styles.room}
+  >
+    <View style={styles.roomTop}>
+      <Text style={styles.roomName}>{room.name}</Text>
+
+      <Ionicons
+        name={
+          selectedId === room.id
+            ? 'checkmark-circle'
+            : 'ellipse-outline'
+        }
+        size={24}
+        color={
+          selectedId === room.id
+            ? colors.accent
+            : colors.muted
+        }
+      />
+    </View>
+
+    <Text style={styles.description}>
+      {room.description}
+    </Text>
+
+    <Text style={styles.price}>
+      ${room.nightlyPrice} / night
+    </Text>
+  </Pressable>
 ))}
 ```
 
 ### Checkpoint
 
-Open the modal and select more than one add-on.
+The modal should show every room, including your original room.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Build add-on modal"
+git commit -m "Build room preference modal"
 ```
 
 ---
 
-# STEP 7 — Calculate the Total
+# STEP 7 — Add Booking Validation
 
-Return to:
-
-```text
-src/screens/OrderCustomizerScreen.js
-```
-
-Replace the total TODO with:
+Inside `handleConfirm()`, replace `TODO 6` with:
 
 ```javascript
-const addOnTotal = menuItem.addOns
-  .filter((item) => selectedAddOns.includes(item.id))
-  .reduce((sum, item) => sum + item.price, 0);
+setError('');
+setConfirmed(false);
 
-return (menuItem.basePrice + addOnTotal) * quantity;
+if (!destination.trim()) {
+  setError('Enter a destination before continuing.');
+  destinationRef.current?.focus();
+  return;
+}
+
+if (!guestName.trim()) {
+  setError('Enter the primary guest name before continuing.');
+  guestNameRef.current?.focus();
+  return;
+}
+
+if (!selectedRoomId) {
+  setError('Choose a room preference before continuing.');
+  return;
+}
+
+setConfirmed(true);
 ```
 
 ### Checkpoint
 
-Changing quantity or add-ons should update the total.
+Test all three validation errors.
+
+Then complete all required fields and confirm the successful state.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Calculate order total"
+git commit -m "Add booking validation"
 ```
 
 ---
 
-# STEP 8 — Test the Full Screen
+# STEP 8 — Final Test
 
-Test:
+Confirm:
 
-- Quantity = 1 disables decrease behavior
-- Quantity can increase
-- TextInput accepts instructions
-- `useRef()` focuses the input
-- Modal opens and closes
-- Add-ons can be selected and removed
-- Total updates
-- Original add-on appears
-- Add to Cart displays success feedback
+- Destination input works
+- Guest-name input works
+- `useRef()` moves focus
+- Guest count cannot go below 1
+- Room modal opens and closes
+- Room selection updates the summary
+- Missing destination shows an error
+- Missing guest name shows an error
+- Missing room shows an error
+- Successful confirmation appears
+- Original room appears
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Test Order Customizer interactions"
+git commit -m "Test Stay Booking workflow"
 ```
 
 ---
@@ -241,10 +293,10 @@ git commit -m "Test Order Customizer interactions"
 # STEP 9 — Push and Merge
 
 ```bash
-git push -u origin feature/order-customizer
+git push -u origin feature/stay-booking
 git switch main
 git pull
-git merge feature/order-customizer
+git merge feature/stay-booking
 git push
 git status
 git log --oneline --graph --all
@@ -258,12 +310,13 @@ Submit a **250–300 word APA 7 reflection**.
 
 Address:
 
-- How is `TextInput` used?
+- How is `TextInput` used in the reservation form?
 - What information is stored in state?
-- What does `useRef()` do?
-- Why is `ScrollView` appropriate?
-- How does the `Modal` improve the experience?
-- How is the total calculated?
+- How does `useRef()` move focus?
+- Why is `ScrollView` needed?
+- How is `Modal` used?
+- How does validation prevent incomplete reservations?
+- How does the interface change after success?
 - What problem did you encounter and how did you solve it?
 
 Use APA 7 student paper format, 1-inch margins, double spacing, page numbers, an approved readable font such as 12-point Times New Roman, a student title page, paragraph indentation, complete sentences, and professional academic writing.
@@ -274,19 +327,20 @@ Include a References page only if outside sources are used.
 
 # Screenshots to Upload in Blackboard
 
-1. Completed Order Customizer application
-2. Special-instructions `TextInput`
-3. Quantity above 1
-4. Add-on modal open
-5. One selected add-on
-6. Updated order total
-7. Original student-created add-on
-8. Add-to-cart success feedback
-9. Completed `AddOnModal.js`
-10. Completed `OrderCustomizerScreen.js`
-11. `git status` showing clean working tree
-12. `git log --oneline --graph --all`
-13. GitHub showing files on `main`
-14. Completed APA 7 reflection document
+1. Completed Stay Booking application
+2. Destination `TextInput`
+3. Guest-name `TextInput`
+4. Guest count above 1
+5. Room-preference modal open
+6. Selected room preference
+7. Validation error
+8. Successful booking confirmation
+9. Original room preference
+10. Completed `RoomPreferenceModal.js`
+11. Completed `BookingScreen.js`
+12. `git status` showing clean working tree
+13. `git log --oneline --graph --all`
+14. GitHub showing files on `main`
+15. Completed APA 7 reflection document
 
 **Do not submit a repository link.**

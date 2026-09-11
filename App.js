@@ -1,6 +1,6 @@
 import React from 'react';
-import OrderCustomizerScreen from './src/screens/OrderCustomizerScreen';
+import BookingScreen from './src/screens/BookingScreen';
 
 export default function App() {
-  return <OrderCustomizerScreen />;
+  return <BookingScreen />;
 }
