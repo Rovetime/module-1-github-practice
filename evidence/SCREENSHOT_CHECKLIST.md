@@ -1,17 +1,15 @@
-# Pulse Feed Screenshot Checklist
-
-- [ ] Completed Pulse Feed application
-- [ ] For You feed
-- [ ] Following feed
-- [ ] One liked post
-- [ ] One bookmarked post
-- [ ] Post with media image
-- [ ] Loading state
-- [ ] Empty-feed state
-- [ ] Original post
-- [ ] Completed PostCard.js
-- [ ] Completed posts.js
+# Order Customizer Screenshot Checklist
+- [ ] Completed application
+- [ ] TextInput
+- [ ] Quantity above 1
+- [ ] Modal open
+- [ ] Selected add-on
+- [ ] Updated total
+- [ ] Original add-on
+- [ ] Success feedback
+- [ ] AddOnModal.js
+- [ ] OrderCustomizerScreen.js
 - [ ] Clean git status
-- [ ] git log --oneline --graph --all
-- [ ] GitHub main branch files
+- [ ] Git log graph
+- [ ] GitHub main
 - [ ] APA 7 reflection

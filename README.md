@@ -1,73 +1,32 @@
-# Module 3 Assignment 2
-# Pulse Feed — Production Social Feed
+# Module 4 Assignment 1
+# Order Customizer — Food Delivery Interface
 
 ## Objective
 
-Complete a guided React Native application called **Pulse Feed** that recreates the structure and density of a professional social-media feed.
+Complete a guided React Native application called **Order Customizer** for a modern food-delivery platform. The application uses reusable components, props, state, `TextInput`, `useRef()`, `ScrollView`, `Pressable`, `Modal`, conditional rendering, validation, and `StyleSheet`.
 
-You will use reusable components, props, state, `FlatList`, `Pressable`, `Image`, `ActivityIndicator`, stable IDs, conditional styling, and feed filtering.
+Students will also complete a short **APA 7 reflection** explaining how input, refs, state, scrolling, and modal interfaces are used in the application.
 
-This assignment is **plug-and-play**. You are not expected to invent unfamiliar React Native syntax.
+## Industry Scenario
+
+You are a junior mobile developer working for a food-delivery company. The design team has provided a production-style item customization screen.
+
+Your job is to connect the interaction while preserving the supplied mobile layout.
+
+Follow the assignment in order:
 
 **Read → Type/Paste → Save → Test → Commit**
 
 ---
 
-## Industry Scenario
-
-You are a junior mobile developer working for a social media company. The design team has already created a production-style mobile feed shell.
-
-Your job is to connect the post data and interaction while keeping the supplied visual system:
-
-- Compact post rows
-- Profile images
-- Display name, username, and time
-- Optional media
-- Reply, repost, like, views, and bookmark controls
-- For You / Following tabs
-- Bottom navigation
-- Loading and empty-feed feedback
-
----
-
-## Props vs State
-
-**Props** pass post information into `PostCard`:
-
-```text
-displayName
-username
-time
-content
-avatar
-imageSource
-replies
-reposts
-likes
-views
-```
-
-**State** remembers values that change while the app runs:
-
-```text
-selectedFeed
-likedIds
-bookmarkedIds
-loading
-```
-
----
-
 # STEP 1 — Open the Project
-
-Open the repository in GitHub Codespaces.
 
 Run:
 
 ```bash
 git status
 git pull
-git switch -c feature/pulse-feed
+git switch -c feature/order-customizer
 npm install
 npm run web
 ```
@@ -76,205 +35,107 @@ Do **not** run `git init`.
 
 ### Checkpoint
 
-You should see the Pulse header, feed tabs, dark production-style shell, and bottom navigation.
+The item page should open with the product image, quantity control, instructions area, add-on button, and total.
 
 ---
 
-# STEP 2 — Add the Original Post
+# STEP 2 — Add One Original Add-On
 
 Open:
 
 ```text
-src/data/posts.js
+src/data/menuItem.js
 ```
 
-Replace the `TODO 1` comment with:
+Replace `TODO 1` with:
 
 ```javascript
-{
-  id: 'post-205',
-  displayName: 'Jordan Miles',
-  username: 'jmiles',
-  time: '3h',
-  content: 'Small UI details matter: consistent icon sizing, clean dividers, and readable spacing can completely change how polished a mobile feed feels.',
-  avatar: require('../assets/images/you.png'),
-  imageSource: null,
-  replies: 6,
-  reposts: 17,
-  likes: 144,
-  views: 5200,
-  following: true,
-},
+{ id: 'addon-onion', label: 'Crispy Onions', price: 1.00 },
 ```
-
-Save the file.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Add Pulse Feed post data"
+git commit -m "Add Order Customizer menu data"
 ```
 
 ---
 
-# STEP 3 — Connect the Like Action
+# STEP 3 — Complete Quantity Controls
 
 Open:
 
 ```text
-src/components/PostActions.js
+src/screens/OrderCustomizerScreen.js
 ```
 
-Find `TODO 2`.
+Replace `TODO 4` with:
 
-Change:
-
-```jsx
-onPress={() => {}}
+```javascript
+setQuantity((current) => Math.max(1, current - 1));
 ```
 
-to:
+Replace `TODO 5` with:
 
-```jsx
-onPress={() => onLike(id)}
+```javascript
+setQuantity((current) => current + 1);
 ```
 
 ### Checkpoint
 
-The action is connected, but the Like button will not change until state is added later.
+Quantity increases and never drops below 1.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Connect Pulse Feed like action"
+git commit -m "Complete quantity controls"
 ```
 
 ---
 
-# STEP 4 — Connect the Bookmark Action
+# STEP 4 — Add useRef Input Focus
 
-In the same file, find `TODO 3`.
-
-Change:
-
-```jsx
-onPress={() => {}}
-```
-
-to:
-
-```jsx
-onPress={() => onBookmark(id)}
-```
-
-### Commit
-
-```bash
-git add .
-git commit -m "Connect Pulse Feed bookmark action"
-```
-
----
-
-# STEP 5 — Add the Loading State
-
-Open:
-
-```text
-src/screens/FeedScreen.js
-```
-
-Under `TODO 4`, paste:
+Under the state variables, replace `TODO 3` with:
 
 ```javascript
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setLoading(false);
-  }, 900);
+const instructionsRef = useRef(null);
+```
 
-  return () => clearTimeout(timer);
-}, []);
+Inside `TextInput`, replace `TODO 8` with:
+
+```jsx
+ref={instructionsRef}
+```
+
+Replace the empty `onPress` under `TODO 9` with:
+
+```jsx
+onPress={() => instructionsRef.current?.focus()}
 ```
 
 ### Checkpoint
 
-Refresh the app after the list is connected later. The loading indicator will appear briefly.
+Press **Tap to focus instructions**. The special-instructions field should receive focus.
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Add Pulse Feed loading state"
+git commit -m "Add useRef input focus"
 ```
 
 ---
 
-# STEP 6 — Filter the Following Feed
+# STEP 5 — Add Add-On State
 
-Replace the `visiblePosts` starter line under `TODO 5` with:
-
-```javascript
-const visiblePosts = useMemo(() => {
-  if (selectedFeed === 'following') {
-    return posts.filter((post) => post.following);
-  }
-
-  return posts;
-}, [selectedFeed]);
-```
-
-### Checkpoint
-
-The **For You** feed will show all posts.
-
-The **Following** feed will show only records where:
+Inside `handleToggleAddOn(id)`, replace `TODO 6` with:
 
 ```javascript
-following: true
-```
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add Pulse Feed tab filtering"
-```
-
----
-
-# STEP 7 — Add Like State
-
-Inside `handleLike(id)`, replace `TODO 6` with:
-
-```javascript
-setLikedIds((current) =>
+setSelectedAddOns((current) =>
   current.includes(id)
-    ? current.filter((postId) => postId !== id)
-    : [...current, id]
-);
-```
-
-This allows the same post to be liked and unliked.
-
-### Commit
-
-```bash
-git add .
-git commit -m "Add Pulse Feed like state"
-```
-
----
-
-# STEP 8 — Add Bookmark State
-
-Inside `handleBookmark(id)`, replace `TODO 7` with:
-
-```javascript
-setBookmarkedIds((current) =>
-  current.includes(id)
-    ? current.filter((postId) => postId !== id)
+    ? current.filter((itemId) => itemId !== id)
     : [...current, id]
 );
 ```
@@ -283,152 +144,108 @@ setBookmarkedIds((current) =>
 
 ```bash
 git add .
-git commit -m "Add Pulse Feed bookmark state"
+git commit -m "Add selected add-on state"
 ```
 
 ---
 
-# STEP 9 — Connect the Reusable PostCard
+# STEP 6 — Build the Add-On Modal
 
-Replace `renderPost()` with:
+Open:
 
-```javascript
-function renderPost({ item }) {
-  return (
-    <PostCard
-      {...item}
-      liked={likedIds.includes(item.id)}
-      bookmarked={bookmarkedIds.includes(item.id)}
-      onLike={handleLike}
-      onBookmark={handleBookmark}
-    />
-  );
-}
+```text
+src/components/AddOnModal.js
 ```
 
-### Checkpoint
-
-One post object is now passed into one reusable `PostCard`.
-
----
-
-# STEP 10 — Display the Feed with FlatList
-
-Find `TODO 9`.
-
-Replace the placeholder comment with:
+Replace `TODO 2` with:
 
 ```jsx
-{loading ? (
-  <LoadingState />
-) : (
-  <FlatList
-    contentContainerStyle={styles.listContent}
-    data={visiblePosts}
-    keyExtractor={(item) => item.id}
-    ListEmptyComponent={EmptyFeed}
-    renderItem={renderPost}
+{addOns.map((item) => (
+  <OptionRow
+    key={item.id}
+    label={item.label}
+    price={item.price}
+    selected={selectedIds.includes(item.id)}
+    onPress={() => onToggle(item.id)}
   />
-)}
+))}
 ```
 
 ### Checkpoint
 
-You should now see the complete social feed.
+Open the modal and select more than one add-on.
+
+### Commit
+
+```bash
+git add .
+git commit -m "Build add-on modal"
+```
+
+---
+
+# STEP 7 — Calculate the Total
+
+Return to:
+
+```text
+src/screens/OrderCustomizerScreen.js
+```
+
+Replace the total TODO with:
+
+```javascript
+const addOnTotal = menuItem.addOns
+  .filter((item) => selectedAddOns.includes(item.id))
+  .reduce((sum, item) => sum + item.price, 0);
+
+return (menuItem.basePrice + addOnTotal) * quantity;
+```
+
+### Checkpoint
+
+Changing quantity or add-ons should update the total.
+
+### Commit
+
+```bash
+git add .
+git commit -m "Calculate order total"
+```
+
+---
+
+# STEP 8 — Test the Full Screen
 
 Test:
 
-1. Press **For You**.
-2. Press **Following**.
-3. Like a post.
-4. Unlike the same post.
-5. Bookmark a post.
-6. Remove the bookmark.
+- Quantity = 1 disables decrease behavior
+- Quantity can increase
+- TextInput accepts instructions
+- `useRef()` focuses the input
+- Modal opens and closes
+- Add-ons can be selected and removed
+- Total updates
+- Original add-on appears
+- Add to Cart displays success feedback
 
 ### Commit
 
 ```bash
 git add .
-git commit -m "Display Pulse Feed with FlatList"
+git commit -m "Test Order Customizer interactions"
 ```
 
 ---
 
-# STEP 11 — Test the Empty Feed
-
-Temporarily change:
-
-```javascript
-const visiblePosts = ...
-```
-
-to:
-
-```javascript
-const visiblePosts = [];
-```
-
-Save.
-
-You should see:
-
-```text
-Nothing here yet
-```
-
-After the screenshot, restore the correct `useMemo()` code.
-
----
-
-# STEP 12 — Final Test
-
-Confirm:
-
-- Pulse Feed opens without errors.
-- Profile images display.
-- Media images display.
-- For You displays all posts.
-- Following displays only followed accounts.
-- Like changes the heart state and count.
-- Like can be removed.
-- Bookmark changes the bookmark state.
-- Bookmark can be removed.
-- Loading state appears.
-- Empty-feed state appears.
-- Your original post appears.
-- Every post has a unique ID.
-
-Run:
+# STEP 9 — Push and Merge
 
 ```bash
-git status
-git log --oneline --graph --all
-```
-
-`git status` should show a clean working tree.
-
----
-
-# STEP 13 — Push and Merge
-
-Push the feature branch:
-
-```bash
-git push -u origin feature/pulse-feed
-```
-
-Then merge:
-
-```bash
+git push -u origin feature/order-customizer
 git switch main
 git pull
-git merge feature/pulse-feed
+git merge feature/order-customizer
 git push
-```
-
-Verify:
-
-```bash
 git status
 git log --oneline --graph --all
 ```
@@ -441,14 +258,13 @@ Submit a **250–300 word APA 7 reflection**.
 
 Address:
 
-- What is a reusable React Native component?
-- How does `PostCard` use props?
+- How is `TextInput` used?
 - What information is stored in state?
-- What happens when the user presses Like?
-- Why is `FlatList` useful for a social feed?
-- Why does each post need a unique ID?
-- How do the For You and Following feeds differ?
-- What was one problem you encountered and how did you solve it?
+- What does `useRef()` do?
+- Why is `ScrollView` appropriate?
+- How does the `Modal` improve the experience?
+- How is the total calculated?
+- What problem did you encounter and how did you solve it?
 
 Use APA 7 student paper format, 1-inch margins, double spacing, page numbers, an approved readable font such as 12-point Times New Roman, a student title page, paragraph indentation, complete sentences, and professional academic writing.
 
@@ -458,22 +274,19 @@ Include a References page only if outside sources are used.
 
 # Screenshots to Upload in Blackboard
 
-Upload screenshots of:
-
-1. Completed Pulse Feed application
-2. For You feed
-3. Following feed
-4. One liked post
-5. One bookmarked post
-6. One post displaying a media image
-7. Loading screen with `ActivityIndicator`
-8. Empty-feed message
-9. Original student-created post
-10. Completed `PostCard.js`
-11. Completed `posts.js`
-12. `git status` showing a clean working tree
-13. `git log --oneline --graph --all`
-14. GitHub showing completed files on `main`
-15. Completed APA 7 reflection document
+1. Completed Order Customizer application
+2. Special-instructions `TextInput`
+3. Quantity above 1
+4. Add-on modal open
+5. One selected add-on
+6. Updated order total
+7. Original student-created add-on
+8. Add-to-cart success feedback
+9. Completed `AddOnModal.js`
+10. Completed `OrderCustomizerScreen.js`
+11. `git status` showing clean working tree
+12. `git log --oneline --graph --all`
+13. GitHub showing files on `main`
+14. Completed APA 7 reflection document
 
 **Do not submit a repository link.**

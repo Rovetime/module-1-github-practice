@@ -1,6 +1,6 @@
 import React from 'react';
-import FeedScreen from './src/screens/FeedScreen';
+import OrderCustomizerScreen from './src/screens/OrderCustomizerScreen';
 
 export default function App() {
-  return <FeedScreen />;
+  return <OrderCustomizerScreen />;
 }

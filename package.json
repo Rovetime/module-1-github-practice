@@ -1,5 +1,4 @@
 {
-  "name": "pulse-feed-app",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -16,5 +15,6 @@
     "react-native-web": "^0.21.0"
   },
   "devDependencies": {},
-  "private": true
+  "private": true,
+  "name": "order-customizer-app"
 }

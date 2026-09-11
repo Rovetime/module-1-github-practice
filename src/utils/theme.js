@@ -1,11 +1,11 @@
 export const colors = {
-  background: '#000000',
-  panel: '#000000',
-  text: '#f2f2f2',
-  muted: '#71767b',
-  line: '#2f3336',
-  accent: '#1d9bf0',
-  repost: '#00ba7c',
-  like: '#f91880',
-  soft: '#16181c',
+  background: '#ffffff',
+  text: '#1f2937',
+  muted: '#6b7280',
+  line: '#e5e7eb',
+  soft: '#f7f7f8',
+  accent: '#ea580c',
+  accentDark: '#c2410c',
+  success: '#15803d',
+  danger: '#b91c1c'
 };
