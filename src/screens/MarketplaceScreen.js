@@ -23,46 +23,80 @@ export default function MarketplaceScreen() {
   const [storageError, setStorageError] = useState('');
   const [activeTab, setActiveTab] = useState('shop');
 
-  // TODO 4:
-  // Use useEffect() to restore the saved cart when this screen first loads.
-  // Required flow:
-  // isLoading true -> loadCart() -> setCartItems() -> catch error -> finally setIsLoading(false)
+useEffect(() => {
+  async function restoreCart() {
+    setIsLoading(true);
+    setStorageError('');
+
+    try {
+      const savedCart = await loadCart();
+      setCartItems(savedCart);
+    } catch (error) {
+      setStorageError('We could not restore your saved cart. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  restoreCart();
+}, []);
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.trim().toLowerCase())
   );
 
-  async function addToCart(product) {
-    // TODO 5:
-    // If item already exists, increase its quantity.
-    // Otherwise add it with quantity: 1.
-    // Then update state AND call saveCart(updatedCart).
+ async function addToCart(product) {
+  const existingItem = cartItems.find((item) => item.id === product.id);
+
+  let updatedCart;
+
+  if (existingItem) {
+    updatedCart = cartItems.map((item) =>
+      item.id === product.id
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    );
+  } else {
+    updatedCart = [...cartItems, { ...product, quantity: 1 }];
   }
 
-  async function increaseQuantity(productId) {
-    // TODO 6:
-    // Increase only the matching item's quantity.
-    // Update state and save the same updated array.
-  }
+  setCartItems(updatedCart);
+  await saveCart(updatedCart);
+}
 
-  async function decreaseQuantity(productId) {
-    // TODO 7:
-    // If quantity is greater than 1, decrease it.
-    // If quantity would become 0, remove the item.
-    // Update state and storage.
-  }
+ async function increaseQuantity(productId) {
+  const updatedCart = cartItems.map((item) =>
+    item.id === productId
+      ? { ...item, quantity: item.quantity + 1 }
+      : item
+  );
 
+  setCartItems(updatedCart);
+  await saveCart(updatedCart);
+}
+async function decreaseQuantity(productId) {
+  const updatedCart = cartItems
+    .map((item) =>
+      item.id === productId
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    )
+    .filter((item) => item.quantity > 0);
+
+  setCartItems(updatedCart);
+  await saveCart(updatedCart);
+}
   async function removeFromCart(productId) {
-    // TODO 8:
-    // Use filter() to remove the matching id.
-    // Update state and storage.
-  }
+  const updatedCart = cartItems.filter((item) => item.id !== productId);
 
-  async function clearCart() {
-    // TODO 9:
-    // Call clearSavedCart(), then setCartItems([]).
-  }
+  setCartItems(updatedCart);
+  await saveCart(updatedCart);
+}
 
+async function clearCart() {
+  await clearSavedCart();
+  setCartItems([]);
+}
   const totalItems = cartItems.reduce(
     (sum, item) => sum + item.quantity,
     0
