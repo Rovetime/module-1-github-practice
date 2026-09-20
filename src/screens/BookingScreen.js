@@ -70,17 +70,18 @@ async function toggleSavedHotel(hotel) {
   setSavedHotels(updatedHotels);
   await saveHotels(updatedHotels);
 }
-  async function removeSavedHotel(hotelId) {
-    // TODO 9:
-    // Remove only the selected hotel from savedHotels.
-    // Update state and storage.
-  }
+async function removeSavedHotel(hotelId) {
+  const updatedHotels = savedHotels.filter(
+    (hotel) => hotel.id !== hotelId
+  );
 
-  async function clearAllSavedHotels() {
-    // TODO 10:
-    // Remove only the saved-hotels storage key and set state to [].
-  }
-
+  setSavedHotels(updatedHotels);
+  await saveHotels(updatedHotels);
+}
+async function clearAllSavedHotels() {
+  await clearSavedHotels();
+  setSavedHotels([]);
+}
   const isSaved = (hotelId) =>
     savedHotels.some((hotel) => hotel.id === hotelId);
 
