@@ -29,26 +29,47 @@ export default function BookingScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [storageError, setStorageError] = useState('');
 
-  // TODO 6:
-  // Restore BOTH saved hotels and selected city when this screen loads.
-  // Use try/catch/finally and end with isLoading false.
+useEffect(() => {
+  async function restoreData() {
+    try {
+      const [storedHotels, storedCity] = await Promise.all([
+        loadHotels(),
+        loadSelectedCity(),
+      ]);
+
+      setSavedHotels(storedHotels);
+      setSelectedCityId(storedCity);
+    } catch (error) {
+      setStorageError('Unable to restore saved travel data.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  restoreData();
+}, []);
 
   const visibleHotels = hotels.filter(
     (hotel) => hotel.cityId === selectedCityId
   );
 
-  async function handleSelectCity(cityId) {
-    // TODO 7:
-    // Update selectedCityId and persist the selected city.
-  }
+async function handleSelectCity(cityId) {
+  setSelectedCityId(cityId);
+  await saveSelectedCity(cityId);
+}
 
-  async function toggleSavedHotel(hotel) {
-    // TODO 8:
-    // If hotel is already saved, remove it.
-    // Otherwise add it.
-    // Update React state and AsyncStorage using the SAME updated array.
-  }
+async function toggleSavedHotel(hotel) {
+  const alreadySaved = savedHotels.some(
+    (savedHotel) => savedHotel.id === hotel.id
+  );
 
+  const updatedHotels = alreadySaved
+    ? savedHotels.filter((savedHotel) => savedHotel.id !== hotel.id)
+    : [...savedHotels, hotel];
+
+  setSavedHotels(updatedHotels);
+  await saveHotels(updatedHotels);
+}
   async function removeSavedHotel(hotelId) {
     // TODO 9:
     // Remove only the selected hotel from savedHotels.
