@@ -1,27 +1,30 @@
-# Northstar Market — Student Starter
+# StayFinder — Student Starter
 
-This starter is intentionally **not finished**. The production-style UI is already built so you can focus on Module 5 persistence instead of inventing unfamiliar React Native syntax from scratch.
+This is a continuing project. **Do not delete this repository after Module 5.** You will return to it in Module 8 to add real location and permission features.
+
+The starter already contains the production-style shell. Your work is persistence + accurate real-world imagery.
 
 ## Read → Type/Paste → Save → Test → Commit
 
-### Checkpoint 1 — Open and Run
+### Checkpoint 1 — Run
 ```bash
 npm install
 npx expo start --web
 ```
-Expected result: Northstar Market opens with Shop and Cart tabs.
 
-Commit:
-```bash
-git add .
-git commit -m "Run Northstar starter"
-```
+Expected result:
+- StayFinder header
+- Stays and Saved tabs
+- Houston, Chicago, New York city choices
+- placeholder hero/hotel images
 
-### Checkpoint 2 — Build the Storage Service
+### Checkpoint 2 — Storage Service
 Open:
-`src/services/cartStorage.js`
+`src/services/bookingStorage.js`
 
-Complete TODO 1, TODO 2, and TODO 3 using:
+Complete TODO 1–5.
+
+You need:
 - `AsyncStorage.setItem()`
 - `AsyncStorage.getItem()`
 - `AsyncStorage.removeItem()`
@@ -31,90 +34,106 @@ Complete TODO 1, TODO 2, and TODO 3 using:
 Expected result: no syntax errors.
 
 Commit:
-`Add AsyncStorage cart service`
+`Add booking persistence service`
 
-### Checkpoint 3 — Restore the Cart
+### Checkpoint 3 — Restore Startup Data
 Open:
-`src/screens/MarketplaceScreen.js`
+`src/screens/BookingScreen.js`
 
-Complete TODO 4 with `useEffect()`.
+Complete TODO 6.
 
-Required sequence:
-1. Set loading.
-2. Clear the previous error.
-3. `await loadCart()`.
-4. Put the returned array into `cartItems`.
-5. Catch errors.
-6. End loading in `finally`.
+Restore:
+- saved hotels
+- selected city
 
-Expected result: app still opens normally.
+Required:
+- try
+- catch
+- finally
+- `setIsLoading(false)` in finally
 
 Commit:
-`Restore saved cart on startup`
+`Restore saved hotels and selected city`
 
-### Checkpoint 4 — Add and Persist
-Complete TODO 5.
+### Checkpoint 4 — Persist City
+Complete TODO 7.
 
 Test:
-1. Add one product.
-2. Add the same product again.
-3. Open Cart.
-4. Quantity should be 2, not two separate rows.
-5. Refresh the app.
-6. Quantity should still be 2.
+1. Choose Chicago.
+2. Refresh.
+3. Chicago should still be selected.
+
+### Checkpoint 5 — Save Hotels
+Complete TODO 8.
+
+Test:
+1. Save one Houston hotel.
+2. Save one Chicago hotel.
+3. Open Saved.
+4. Refresh.
+5. Both should remain.
 
 Commit:
-`Persist cart add and quantity changes`
+`Persist hotel save and remove actions`
 
-### Checkpoint 5 — Quantity and Remove
-Complete TODO 6, TODO 7, TODO 8.
+### Checkpoint 6 — Remove and Clear
+Complete TODO 9 and TODO 10.
 
-Test every action, then refresh after each one.
+Refresh after each action to prove persistence.
 
-Expected result: state and saved storage always match.
+### Checkpoint 7 — Replace All Placeholder Images
+You must replace 9 images:
+- 3 city hero images
+- 6 hotel images
 
-Commit:
-`Add remove and clear cart persistence`
+Use the same filenames so the code does not need to change unless you choose to.
 
-### Checkpoint 6 — Clear Cart
-Complete TODO 9.
+For every image, complete the matching record in:
+`src/data/photoSources.js`
 
-Important: use `removeItem()` through `clearSavedCart()`. Do **not** use `AsyncStorage.clear()`.
+If you choose a real hotel different from the starter fictional property, update:
+`src/data/hotels.js`
 
-Expected result: cart becomes empty and stays empty after refresh.
+The visible hotel name and neighborhood must match the real hotel represented by the photo.
 
-### Final Verification
-- Add at least two different products.
-- Make one quantity greater than 1.
+No AI-generated hotel/city imagery for this requirement.
+
+### Checkpoint 8 — Repository Continuity
+Do not start over later.
+
+Keep:
+- this repository;
+- meaningful commits;
+- stable `main`;
+- the existing component structure.
+
+Module 8 will add real location and permissions to this same project.
+
+### Final Test
+- Select New York.
+- Save at least three hotels across the three cities.
 - Refresh/restart.
-- Confirm items remain.
-- Remove one.
-- Refresh again.
-- Confirm the removal remains.
-- Run `git status`.
-- Run `git log --oneline --graph --decorate -8`.
+- Confirm selected city returns.
+- Confirm all saved hotels return.
+- Remove one saved hotel.
+- Refresh.
+- Confirm it stays removed.
+- Verify all 9 real photos and all 9 photo-source records.
 
 ## Troubleshooting
-If Expo Web has package problems:
+If the UI changes but refresh loses it:
+- React state works;
+- persistence does not;
+- check whether the updated array was passed to `saveHotels()`.
+
+If `.map()` fails after load:
+- verify `loadHotels()` returns `[]` instead of `null`;
+- verify JSON was parsed.
+
+If a hotel image does not appear:
+- verify the filename exactly matches the `require()` path;
+- use JPG/PNG supported by Expo;
+- restart Expo with cache clear if needed:
 ```bash
-rm -rf node_modules
-npm install
 npx expo start --web -c
 ```
-
-If the cart updates on screen but disappears after refresh:
-- state is working;
-- persistence is not;
-- check whether `saveCart(updatedCart)` runs after the action.
-
-If `[object Object]` appears in storage logic:
-- you likely forgot `JSON.stringify()`.
-
-If `.map()` or `.reduce()` fails after loading:
-- you may have forgotten `JSON.parse()` or returned `null` instead of `[]`.
-
-## Files You Should Edit
-- `src/services/cartStorage.js`
-- `src/screens/MarketplaceScreen.js`
-
-Do not redesign the supplied interface. The goal is to add persistence to a professional shell.

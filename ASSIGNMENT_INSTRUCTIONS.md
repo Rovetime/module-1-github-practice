@@ -1,69 +1,96 @@
-# Module 5 Assignment 1 — Saved Cart: Modern Marketplace
+# Module 5 Assignment 2 — StayFinder: Persistent Hotel Booking Explorer
 
 ## Objective
-Build a production-style mobile marketplace that preserves cart data with AsyncStorage. The starter interface uses a modern dense shopping layout inspired by current large marketplace apps, but it uses original branding, original product data, and course-created assets.
+Build a production-style hotel discovery and saved-stays application inspired by the structure and density of current travel-booking apps. The app must support three cities, locally persist saved hotels and the selected city, and use accurate real-world imagery for full credit.
 
 ## Industry Scenario
-You have joined the mobile commerce team for Northstar Market. The visual design is already approved. Your job is to make the cart behave like a real shopping app: items must survive refresh/restart, quantity changes must remain saved, and the user must see appropriate loading, empty, data, and error states.
+You have joined the mobile team for StayFinder, a travel-booking product. The starter interface and component structure are already approved. Your job is to complete local persistence and replace all course placeholders with accurate real-world imagery.
 
-## Required Project Structure
-Use the supplied structure. Do not move the entire project into App.js.
+This repository is a continuing project. Keep it organized. In Module 8, you will return to this same application and add real location and permission features. Do not throw away or rebuild this repository after Module 5.
+
+## Required Cities
+- Houston, Texas
+- Chicago, Illinois
+- New York, New York
+
+## Real-Photo Requirement — Full Credit
+The starter contains placeholder images on purpose.
+
+For full credit you must replace:
+- all 3 city hero images;
+- all 6 hotel images.
+
+That is **9 real photos total**.
+
+Requirements:
+1. Each city image must accurately represent that city.
+2. Each hotel image must accurately represent the real hotel you choose.
+3. Update the hotel name/neighborhood data if you choose a different real hotel than the starter fictional name.
+4. Use images that are legally appropriate for coursework or clearly sourceable.
+5. Record source information in `src/data/photoSources.js`.
+6. Do not use AI-generated city or hotel images for this requirement.
+7. Do not use the same generic hotel image for multiple properties.
 
 ## Assignment Tasks
-1. Create branch `feature/local-persistence`.
-2. Install dependencies with `npm install`.
-3. Start Expo Web with `npx expo start --web`.
-4. Complete `src/services/cartStorage.js`.
-5. Restore the saved cart when `MarketplaceScreen` first loads.
-6. Add items to the cart. If the same item is added twice, increase quantity instead of duplicating the row.
-7. Save the exact updated cart array after every add, increase, decrease, and remove action.
-8. Decreasing quantity from 1 must remove that product.
-9. Clear Cart must remove only the cart storage key.
-10. Keep the supplied high-fidelity visual structure. Do not redesign it into giant cards, random gradients, oversized buttons, or generic dashboard blocks.
-11. Test persistence: add at least two products, refresh/restart the app, and confirm the cart returns.
-12. Demonstrate all four interface conditions: loading, empty, cart with items, and storage-error handling in code.
-13. Finish with a clean Git working tree and meaningful commit history.
+1. Create branch `feature/saved-stays`.
+2. Complete `bookingStorage.js`.
+3. Restore saved hotels and selected city on startup.
+4. Persist city selection.
+5. Heart icon must save/unsave a hotel.
+6. Saved tab must display saved hotels.
+7. Remove one saved hotel and persist the removal.
+8. Clear All must remove only the saved-hotels key.
+9. Replace all 9 placeholder images with accurate real photos.
+10. Update `photoSources.js` for all 9 images.
+11. Preserve the supplied booking-style visual hierarchy. Do not convert it into generic giant cards or decorative AI-style blocks.
+12. Test persistence after refresh/restart.
+13. Keep the repository because Module 8 will extend it with location and permissions.
 
 ## Required Git Commits
-Use at least these logical checkpoints:
-- `Add AsyncStorage cart service`
-- `Restore saved cart on startup`
-- `Persist cart add and quantity changes`
-- `Add remove and clear cart persistence`
-- `Verify loading empty and saved cart states`
+Suggested checkpoints:
+- `Add booking persistence service`
+- `Restore saved hotels and selected city`
+- `Persist hotel save and remove actions`
+- `Add Houston real hotel and city imagery`
+- `Add Chicago real hotel and city imagery`
+- `Add New York real hotel and city imagery`
+- `Verify saved stays persistence`
 
 ## APA 7 Reflection — 250–300 Words
 Explain:
-- the difference between React state and persistent storage;
-- why `JSON.stringify()` and `JSON.parse()` are required;
-- where asynchronous code appears in your app;
-- one persistence bug you encountered and how you verified the fix;
-- why a real shopping app should preserve cart data.
-
-Use APA 7 student-paper formatting: 1-inch margins, double spacing, page numbers, 12-point Times New Roman or another APA-approved readable font, student title page, paragraph indentation, and professional academic writing. Add a References page only if outside sources are used.
+- why saved hotels and selected city should persist;
+- how `JSON.stringify()` and `JSON.parse()` are used;
+- how async/await appears in the app;
+- why image accuracy matters in a travel-booking interface;
+- how Git history will help when the same repository is extended with real location in Module 8.
 
 ## Screenshots to Upload in Blackboard
 Upload screenshots only. Do not submit a repository link.
-1. Shop screen showing the modern marketplace UI.
-2. Cart with at least two different products.
-3. Quantity greater than 1 for at least one product.
-4. Cart restored after a refresh/restart.
-5. `cartStorage.js` showing completed persistence functions.
-6. `MarketplaceScreen.js` showing the restore logic and one cart update function.
-7. Terminal showing `git status` with a clean working tree.
-8. Terminal showing `git log --oneline --graph --decorate -8`.
-9. GitHub repository files on `main` after merge.
-10. Completed APA 7 reflection document.
+1. Houston screen with real city and hotel photos.
+2. Chicago screen with real city and hotel photos.
+3. New York screen with real city and hotel photos.
+4. Saved tab with at least three saved hotels.
+5. Saved hotels restored after refresh/restart.
+6. `bookingStorage.js` completed.
+7. `BookingScreen.js` showing startup restore logic.
+8. `photoSources.js` showing all 9 completed source records.
+9. Terminal showing clean `git status`.
+10. Terminal showing `git log --oneline --graph --decorate -10`.
+11. GitHub files on `main` after merge.
+12. Completed APA 7 reflection.
 
 ## 100-Point Rubric
 | Category | Points |
 |---|---:|
-| AsyncStorage service: save, load, remove specific key | 20 |
-| Startup restore with loading/error handling | 15 |
-| Add/increase/decrease/remove persistence | 20 |
-| Refresh/restart persistence test works | 15 |
-| Loading, empty, data, and error-state logic | 10 |
-| Production UI preserved and functional | 10 |
-| Git branch, meaningful commits, clean main | 5 |
+| AsyncStorage save/load/remove + city persistence | 20 |
+| Saved hotel add/remove/clear behavior | 15 |
+| Startup restore, loading, error handling | 15 |
+| All 3 city photos are real, accurate, and credited | 10 |
+| All 6 hotel photos are real, accurate, and credited | 15 |
+| Booking-style production UI preserved | 10 |
+| Refresh/restart persistence verified | 5 |
+| Git branch, meaningful commits, clean main, repo preserved | 5 |
 | APA 7 reflection | 5 |
 | **Total** | **100** |
+
+**Important:** A working persistence solution with placeholder or inaccurate hotel/city images cannot earn full photo/UI credit.

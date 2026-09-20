@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Northstar Market",
-    "slug": "northstar-market",
+    "name": "StayFinder",
+    "slug": "stayfinder-booking",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
