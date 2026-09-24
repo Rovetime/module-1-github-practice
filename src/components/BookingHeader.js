@@ -1,19 +1,37 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function BookingHeader({ savedCount }) {
+export default function BookingHeader({
+  onRefresh,
+  isRefreshing,
+}) {
   return (
     <View style={styles.header}>
       <View>
         <Text style={styles.brand}>StayFinder</Text>
-        <Text style={styles.tagline}>Find a stay that fits the trip</Text>
+        <Text style={styles.sub}>REMOTE TRAVEL DATA</Text>
       </View>
 
-      <View style={styles.savedPill}>
-        <Ionicons name="heart-outline" size={18} color="#0f172a" />
-        <Text style={styles.savedCount}>{savedCount}</Text>
-      </View>
+      <Pressable
+        onPress={onRefresh}
+        disabled={isRefreshing}
+        style={styles.refresh}
+      >
+        <Ionicons
+          name="refresh"
+          size={18}
+          color="#003b95"
+        />
+        <Text style={styles.refreshText}>
+          {isRefreshing ? 'Refreshing' : 'Refresh'}
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -21,25 +39,38 @@ export default function BookingHeader({ savedCount }) {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: '#003b95',
-    paddingHorizontal: 18,
-    paddingTop: 14,
-    paddingBottom: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  brand: { color: '#fff', fontSize: 25, fontWeight: '900', letterSpacing: -0.7 },
-  tagline: { marginTop: 2, color: '#dbeafe', fontSize: 12 },
-  savedPill: {
-    minWidth: 44,
-    height: 36,
-    paddingHorizontal: 10,
+  brand: {
+    color: '#ffffff',
+    fontSize: 26,
+    fontWeight: '900',
+    letterSpacing: -0.8,
+  },
+  sub: {
+    color: '#dbeafe',
+    marginTop: 2,
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 1.1,
+  },
+  refresh: {
+    backgroundColor: '#ffffff',
     borderRadius: 18,
-    backgroundColor: '#fff',
+    minHeight: 36,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     gap: 6,
+    paddingHorizontal: 12,
   },
-  savedCount: { color: '#0f172a', fontWeight: '900' },
+  refreshText: {
+    color: '#003b95',
+    fontSize: 12,
+    fontWeight: '900',
+  },
 });

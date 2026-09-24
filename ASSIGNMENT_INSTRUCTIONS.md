@@ -1,75 +1,104 @@
-# Module 6 Assignment 1 — Product Discovery: Live Marketplace API
+# Module 6 Assignment 2 — StayFinder: Remote Travel Data and Caching
 
 ## Objective
-Convert a production-style mobile marketplace from local/static data into a connected application that requests live product data from a remote API. You will use `fetch()`, JSON, `async`/`await`, React state, `useEffect()`, `FlatList`, loading/error/empty states, retry behavior, and a separate API service file.
+Continue the StayFinder repository by adding remote destination data and a local cache.
+
+You will combine:
+- API requests
+- `fetch()`
+- JSON
+- `async`/`await`
+- `useEffect()`
+- React state
+- AsyncStorage
+- cache-first loading
+- manual refresh
+- error fallback
 
 ## Industry Scenario
-You have joined the mobile commerce team for Northstar Market. The visual team already approved the interface. Your task is to connect the catalog to a remote API so the app no longer depends on a hard-coded product array.
+StayFinder already contains city and hotel information from your earlier work. Your product team now wants each destination page to display live travel conditions from a remote service.
 
-## API Used
-`https://dummyjson.com/products?limit=30`
+The app should not become useless if the network request fails. If saved remote data exists, the app should keep showing the cached information and explain that the refresh failed.
 
-The API returns an object containing a `products` array.
+## Remote API
+Open-Meteo Forecast API:
+https://api.open-meteo.com/v1/forecast
+
+No API key is required.
+
+## Required Cities
+- Houston, Texas
+- Chicago, Illinois
+- New York, New York
+
+Coordinates are already provided in `src/data/cities.js`.
 
 ## Assignment Tasks
-1. Create branch `feature/live-product-api`.
-2. Run the starter with `npm install` and `npx expo start --web`.
-3. Complete `src/services/productApi.js`.
-4. Use `fetch()` to request the endpoint.
+1. Create `feature/remote-travel-cache`.
+2. Complete `travelApi.js`.
+3. Build the request URL from the selected city's coordinates.
+4. Request current temperature, apparent temperature, weather code, and wind speed.
 5. Check `response.ok`.
-6. Throw an error for unsuccessful HTTP responses.
-7. Convert the body with `await response.json()`.
-8. Return only `data.products` from the service.
-9. Complete `loadProducts()` in `MarketplaceScreen.js`.
-10. Use `useEffect()` to request products when the screen starts.
-11. Store returned products in React state.
-12. Display remote data with `FlatList`.
-13. Preserve loading, error, empty, and data states.
-14. Make Try Again run the request again.
-15. Make Refresh perform a manual remote refresh.
-16. Search and category filters must work on downloaded data.
-17. Preserve the supplied dense production marketplace layout.
-18. Finish with clean Git status and meaningful commits.
-
-## Required Testing
-- Initial load: loading appears, then remote products display.
-- Search: use a real product term.
-- Category: filter the downloaded data.
-- Empty state: search a nonsense term.
-- Refresh: press Refresh and confirm another request completes.
-- Error/retry: temporarily change endpoint to `https://dummyjson.com/not-a-real-products-route`, verify error, restore endpoint, press Try Again.
+6. Convert the response with `response.json()`.
+7. Return a clean weather object from the service.
+8. Complete `travelCache.js`.
+9. Save a `savedAt` timestamp and weather data per city.
+10. Load cached data when available.
+11. Show cache first.
+12. Request fresh remote data after cache is displayed.
+13. Replace state with fresh API data.
+14. Update the cache after a successful request.
+15. Show a fallback message if live refresh fails but cache exists.
+16. Show a full error state if there is no cache and the request fails.
+17. Make Houston, Chicago, and New York each load their own remote data and cache.
+18. Implement manual Refresh behavior.
+19. Preserve the existing StayFinder visual system.
+20. Keep the same repository for future Module 8 location/permissions work.
 
 ## Required Git Commits
-- `Connect product service to remote API`
-- `Load remote products on startup`
-- `Add loading error and retry states`
-- `Add live search and category filters`
-- `Add manual API refresh`
-- `Verify live marketplace request flow`
+Use meaningful checkpoints such as:
+- `Connect destination conditions to remote API`
+- `Add destination cache service`
+- `Add cache first destination loading`
+- `Refresh remote data by selected city`
+- `Add offline cache fallback`
+- `Add manual travel data refresh`
 
 ## APA 7 Reflection — 250–300 Words
-Explain what an API does, client vs server, why `fetch()` is asynchronous, what `response.json()` does, how loading/empty/error/data states work, one API problem you tested, and why API logic belongs in a service file.
+Explain:
+- how remote data and cached data are different;
+- why caching improves a mobile app;
+- how AsyncStorage is used as a cache;
+- why `savedAt` is useful;
+- what happens when the API succeeds;
+- what happens when the API fails but cache exists;
+- what happens when the API fails and no cache exists;
+- why the same repository should be preserved for later location work.
 
-## Screenshots to Upload in Blackboard
-**Do not submit a repository link.** Upload screenshots of: live marketplace, search results, category results, empty state, temporary error state, successful retry, completed `productApi.js`, `loadProducts()` + `useEffect()`, clean `git status`, `git log --oneline --graph --decorate -8`, GitHub files on `main`, and completed APA 7 reflection.
+## Screenshot Evidence
+Place screenshots in the same APA document:
+1. Houston live destination data.
+2. Chicago live destination data.
+3. New York live destination data.
+4. `travelApi.js`.
+5. `travelCache.js`.
+6. `BookingScreen.js` cache-first flow.
+7. Cached fallback message after intentionally breaking the API URL.
+8. Working screen after restoring the API URL.
+9. Clean `git status`.
+10. `git log --oneline --graph --decorate -8`.
+
+Do not submit a repository link.
 
 ## 100-Point Rubric
 | Category | Points |
 |---|---:|
-| API service: fetch, response.ok, JSON, correct returned array | 20 |
-| Remote data loads into React state on startup | 15 |
-| Loading, error, retry, empty, and data states | 20 |
-| Search and category filtering | 10 |
-| Manual remote refresh | 10 |
-| Production marketplace UI preserved | 10 |
-| API logic separated in service layer | 5 |
-| Git branch, meaningful commits, clean main | 5 |
-| APA 7 reflection | 5 |
+| Remote API request and response handling | 20 |
+| Cache save/load with AsyncStorage | 20 |
+| Cache-first flow and fresh-data replacement | 20 |
+| Error fallback and manual refresh | 15 |
+| All three cities use correct destination data | 10 |
+| Existing StayFinder interface preserved | 5 |
+| Git workflow and repository continuity | 5 |
+| APA 7 reflection + screenshot evidence | 5 |
 | **Total** | **100** |
-
-## References
-React useEffect: https://react.dev/reference/react/useEffect
-React useState: https://react.dev/reference/react/useState
-W3Schools Fetch API: https://www.w3schools.com/js/js_api_fetch.asp
-W3Schools JSON: https://www.w3schools.com/js/js_json.asp
-DummyJSON Products: https://dummyjson.com/docs/products

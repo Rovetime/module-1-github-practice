@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
+
 import {
-  ActivityIndicator,
   FlatList,
-  Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -11,161 +12,223 @@ import {
 
 import BookingHeader from '../components/BookingHeader';
 import CitySelector from '../components/CitySelector';
-import HotelCard from '../components/HotelCard';
-import SavedPanel from '../components/SavedPanel';
-import { cities, hotels } from '../data/hotels';
+import HotelRow from '../components/HotelRow';
+import TravelConditionsCard from '../components/TravelConditionsCard';
 import {
-  clearSavedHotels,
-  loadHotels,
-  loadSelectedCity,
-  saveHotels,
-  saveSelectedCity,
-} from '../services/bookingStorage';
+  ErrorState,
+  LoadingState,
+} from '../components/RequestStates';
+
+import { cities } from '../data/cities';
+import { hotels } from '../data/hotels';
+
+import {
+  getTravelConditions,
+} from '../services/travelApi';
+
+import {
+  loadTravelCache,
+  saveTravelCache,
+} from '../services/travelCache';
 
 export default function BookingScreen() {
-  const [selectedCityId, setSelectedCityId] = useState('houston');
-  const [savedHotels, setSavedHotels] = useState([]);
-  const [activeTab, setActiveTab] = useState('stays');
-  const [isLoading, setIsLoading] = useState(true);
-  const [storageError, setStorageError] = useState('');
+  const [
+    selectedCityId,
+    setSelectedCityId,
+  ] = useState('houston');
 
-useEffect(() => {
-  async function restoreData() {
-    try {
-      const [storedHotels, storedCity] = await Promise.all([
-        loadHotels(),
-        loadSelectedCity(),
-      ]);
+  const [
+    weather,
+    setWeather,
+  ] = useState(null);
 
-      setSavedHotels(storedHotels);
-      setSelectedCityId(storedCity);
-    } catch (error) {
-      setStorageError('Unable to restore saved travel data.');
-    } finally {
-      setIsLoading(false);
-    }
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(true);
+
+  const [
+    isRefreshing,
+    setIsRefreshing,
+  ] = useState(false);
+
+  const [
+    errorMessage,
+    setErrorMessage,
+  ] = useState('');
+
+  const [
+    sourceLabel,
+    setSourceLabel,
+  ] = useState('');
+
+  const [
+    lastUpdatedLabel,
+    setLastUpdatedLabel,
+  ] = useState('');
+
+  const selectedCity =
+    cities.find(
+      (city) =>
+        city.id === selectedCityId
+    );
+
+  const cityHotels =
+    hotels.filter(
+      (hotel) =>
+        hotel.cityId === selectedCityId
+    );
+
+  // TODO 8:
+  // Create async function loadCityData(isManualRefresh = false).
+  //
+  // Required cache-first flow:
+  // 1. If manual refresh, set isRefreshing(true).
+  //    Otherwise set isLoading(true).
+  // 2. Clear old error.
+  // 3. await loadTravelCache(selectedCity.id).
+  // 4. If cache exists:
+  //      setWeather(cached.weather)
+  //      setSourceLabel('Saved cache')
+  //      setLastUpdatedLabel(...) using cached.savedAt
+  //      setIsLoading(false)
+  // 5. Request fresh data from getTravelConditions().
+  // 6. setWeather(freshData)
+  // 7. setSourceLabel('Live API')
+  // 8. update lastUpdatedLabel
+  // 9. await saveTravelCache(selectedCity.id, freshData)
+  // 10. catch:
+  //      if weather is null, show full error
+  //      otherwise show a message that cached data is being used
+  // 11. finally stop loading and refreshing.
+
+  // TODO 9:
+  // Use useEffect() so the flow runs when selectedCityId changes.
+
+  if (
+    isLoading &&
+    weather === null
+  ) {
+    return <LoadingState />;
   }
 
-  restoreData();
-}, []);
-
-  const visibleHotels = hotels.filter(
-    (hotel) => hotel.cityId === selectedCityId
-  );
-
-async function handleSelectCity(cityId) {
-  setSelectedCityId(cityId);
-  await saveSelectedCity(cityId);
-}
-
-async function toggleSavedHotel(hotel) {
-  const alreadySaved = savedHotels.some(
-    (savedHotel) => savedHotel.id === hotel.id
-  );
-
-  const updatedHotels = alreadySaved
-    ? savedHotels.filter((savedHotel) => savedHotel.id !== hotel.id)
-    : [...savedHotels, hotel];
-
-  setSavedHotels(updatedHotels);
-  await saveHotels(updatedHotels);
-}
-async function removeSavedHotel(hotelId) {
-  const updatedHotels = savedHotels.filter(
-    (hotel) => hotel.id !== hotelId
-  );
-
-  setSavedHotels(updatedHotels);
-  await saveHotels(updatedHotels);
-}
-async function clearAllSavedHotels() {
-  await clearSavedHotels();
-  setSavedHotels([]);
-}
-  const isSaved = (hotelId) =>
-    savedHotels.some((hotel) => hotel.id === hotelId);
-
-  if (isLoading) {
+  if (
+    errorMessage !== '' &&
+    weather === null
+  ) {
     return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" />
-        <Text style={styles.loadingTitle}>Loading your saved stays...</Text>
-        <Text style={styles.loadingText}>StayFinder is restoring local travel data.</Text>
-      </View>
+      <ErrorState
+        message={errorMessage}
+        onRetry={() =>
+          loadCityData()
+        }
+      />
     );
   }
 
   return (
     <View style={styles.screen}>
-      <BookingHeader savedCount={savedHotels.length} />
+      <BookingHeader
+        onRefresh={() =>
+          loadCityData(true)
+        }
+        isRefreshing={isRefreshing}
+      />
 
-      <View style={styles.tabs}>
-        <Pressable onPress={() => setActiveTab('stays')} style={[styles.tab, activeTab === 'stays' && styles.tabActive]}>
-          <Text style={[styles.tabText, activeTab === 'stays' && styles.tabTextActive]}>Stays</Text>
-        </Pressable>
-        <Pressable onPress={() => setActiveTab('saved')} style={[styles.tab, activeTab === 'saved' && styles.tabActive]}>
-          <Text style={[styles.tabText, activeTab === 'saved' && styles.tabTextActive]}>Saved ({savedHotels.length})</Text>
-        </Pressable>
-      </View>
+      <CitySelector
+        cities={cities}
+        selectedCityId={selectedCityId}
+        onSelectCity={
+          setSelectedCityId
+        }
+      />
 
-      {storageError !== '' && (
-        <View style={styles.errorBanner}>
-          <Text style={styles.errorText}>{storageError}</Text>
+      {errorMessage !== '' && (
+        <View style={styles.banner}>
+          <Text style={styles.bannerText}>
+            {errorMessage}
+          </Text>
         </View>
       )}
 
-      {activeTab === 'stays' ? (
-        <FlatList
-          data={visibleHotels}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <HotelCard
-              hotel={item}
-              isSaved={isSaved(item.id)}
-              onToggleSave={toggleSavedHotel}
-            />
-          )}
-          ListHeaderComponent={
-            <View>
-              <CitySelector
-                cities={cities}
-                selectedCityId={selectedCityId}
-                onSelect={handleSelectCity}
+      <FlatList
+        data={cityHotels}
+        keyExtractor={(item) =>
+          item.id
+        }
+        renderItem={({ item }) => (
+          <HotelRow hotel={item} />
+        )}
+        ListHeaderComponent={
+          <>
+            {weather !== null && (
+              <TravelConditionsCard
+                city={selectedCity}
+                weather={weather}
+                sourceLabel={sourceLabel}
+                lastUpdatedLabel={
+                  lastUpdatedLabel
+                }
               />
+            )}
 
-              <View style={styles.resultsHeader}>
-                <Text style={styles.resultsTitle}>Places to stay</Text>
-                <Text style={styles.resultsText}>Compare two starter properties in each city, then replace all placeholder images with accurate real-city and real-hotel photos.</Text>
-              </View>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.eyebrow}>
+                STAY OPTIONS
+              </Text>
+              <Text style={styles.heading}>
+                Properties in {selectedCity.name}
+              </Text>
+              <Text style={styles.subheading}>
+                Hotel records remain part of the existing project while destination conditions now come from a remote service.
+              </Text>
             </View>
-          }
-        />
-      ) : (
-        <ScrollView>
-          <SavedPanel
-            savedHotels={savedHotels}
-            onRemove={removeSavedHotel}
-            onClear={clearAllSavedHotels}
-          />
-        </ScrollView>
-      )}
+          </>
+        }
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#fff' },
-  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, backgroundColor: '#fff' },
-  loadingTitle: { marginTop: 14, color: '#0f172a', fontSize: 18, fontWeight: '900' },
-  loadingText: { marginTop: 6, color: '#64748b', textAlign: 'center' },
-  tabs: { flexDirection: 'row', paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: '#dbe3ee', backgroundColor: '#fff' },
-  tab: { marginRight: 24, paddingVertical: 12, borderBottomWidth: 3, borderBottomColor: 'transparent' },
-  tabActive: { borderBottomColor: '#006ce4' },
-  tabText: { color: '#64748b', fontWeight: '800' },
-  tabTextActive: { color: '#0057b8' },
-  errorBanner: { backgroundColor: '#fff1f2', borderBottomWidth: 1, borderBottomColor: '#fecdd3', paddingHorizontal: 16, paddingVertical: 10 },
-  errorText: { color: '#9f1239', fontWeight: '700' },
-  resultsHeader: { paddingHorizontal: 16, paddingTop: 20, paddingBottom: 8, backgroundColor: '#fff' },
-  resultsTitle: { color: '#0f172a', fontSize: 24, fontWeight: '900', letterSpacing: -0.7 },
-  resultsText: { marginTop: 6, color: '#64748b', lineHeight: 20, fontSize: 13 },
+  screen: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  banner: {
+    backgroundColor: '#fff7ed',
+    borderBottomWidth: 1,
+    borderBottomColor: '#fed7aa',
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+  },
+  bannerText: {
+    color: '#9a3412',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  sectionHeader: {
+    paddingHorizontal: 16,
+    paddingTop: 18,
+    paddingBottom: 8,
+  },
+  eyebrow: {
+    color: '#003b95',
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 1,
+  },
+  heading: {
+    marginTop: 4,
+    color: '#111827',
+    fontSize: 24,
+    fontWeight: '900',
+    letterSpacing: -0.5,
+  },
+  subheading: {
+    marginTop: 6,
+    color: '#6b7280',
+    fontSize: 12,
+    lineHeight: 18,
+  },
 });

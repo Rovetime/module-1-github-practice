@@ -1,1 +1,10 @@
-{"expo":{"name":"Northstar Live Market","slug":"northstar-live-market","version":"1.0.0","orientation":"portrait","userInterfaceStyle":"light","web":{"bundler":"metro"}}}
+{
+  "expo": {
+    "name": "StayFinder",
+    "slug": "stayfinder-remote-cache",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "web": { "bundler": "metro" }
+  }
+}

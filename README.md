@@ -1,36 +1,117 @@
-# Northstar Live Market — Student Starter
+# StayFinder — Module 6 Assignment 2 Student Starter
 
-The professional marketplace shell is already built. Your task is the remote-data logic.
+This project continues the StayFinder travel application.
+
+## Goal
+Add **remote destination conditions + local caching**.
+
+The hotel list remains local for this assignment. The new destination conditions come from the Open-Meteo API and are cached in AsyncStorage.
 
 ## Read → Type/Paste → Save → Test → Commit
 
-### 1. Run
+### Checkpoint 1 — Branch
 ```bash
 git status
-git switch -c feature/live-product-api
+git switch -c feature/remote-travel-cache
 npm install
 npx expo start --web
 ```
 
-### 2. Complete `src/services/productApi.js`
-Required flow: `fetch()` → `response.ok` → `response.json()` → `data.products`.
+### Checkpoint 2 — travelApi.js
+Open:
+`src/services/travelApi.js`
 
-Commit: `Connect product service to remote API`
+Complete TODO 1–5.
 
-### 3. Complete `loadProducts()`
-Use loading/refreshing state, clear previous error, `await getProducts()`, update state, catch errors, and finish in `finally`.
+Use:
+`https://api.open-meteo.com/v1/forecast`
 
-### 4. Add `useEffect()`
-Call `loadProducts()` once when the screen starts.
+Required current fields:
+- temperature_2m
+- apparent_temperature
+- weather_code
+- wind_speed_10m
 
-### 5. Test Search / Category / Empty
-Search `phone`, select a category, and use a nonsense search term to show the empty state.
+Use Fahrenheit and mph.
 
-### 6. Test Refresh
-Press Refresh. The list should remain visible while the request runs again.
+Commit:
+`Connect destination conditions to remote API`
 
-### 7. Test Error and Retry
-Temporarily change the endpoint to `https://dummyjson.com/not-a-real-products-route`. Restore the correct endpoint and use Try Again.
+### Checkpoint 3 — travelCache.js
+Open:
+`src/services/travelCache.js`
 
-## Troubleshooting
-If FlatList fails, verify the service returns `data.products`, which is an array. If loading never ends, check `finally`. If requests repeat, check `useEffect()` uses `[]`.
+Complete TODO 6–7.
+
+Store:
+```js
+{
+  savedAt: Date.now(),
+  weather: weather
+}
+```
+
+Commit:
+`Add destination cache service`
+
+### Checkpoint 4 — BookingScreen.js
+Complete TODO 8.
+
+Required flow:
+```text
+Load cache
+↓
+Show cache if it exists
+↓
+Request live API data
+↓
+Show fresh data
+↓
+Save fresh data to cache
+```
+
+Commit:
+`Add cache first destination loading`
+
+### Checkpoint 5 — City Switching
+Complete TODO 9.
+
+When Houston, Chicago, or New York is selected:
+- load that city's cache;
+- request that city's live remote conditions;
+- save that city's refreshed cache.
+
+Commit:
+`Refresh remote data by selected city`
+
+### Checkpoint 6 — Error Fallback
+After a successful load, temporarily break the BASE_URL in `travelApi.js`.
+
+Expected:
+- cached data remains visible;
+- banner explains that live refresh failed.
+
+Restore the correct URL.
+
+Commit:
+`Add offline cache fallback`
+
+### Checkpoint 7 — Manual Refresh
+Press Refresh.
+
+Expected:
+- screen remains visible;
+- refresh state appears;
+- API request runs;
+- cache is updated.
+
+Commit:
+`Add manual travel data refresh`
+
+## Files You Should Edit
+- `src/services/travelApi.js`
+- `src/services/travelCache.js`
+- `src/screens/BookingScreen.js`
+
+Do not rebuild the application from scratch.
+Keep this repository for future modules.
