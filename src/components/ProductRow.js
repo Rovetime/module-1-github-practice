@@ -1,34 +1,4 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-
-export default function ProductRow({ product, onAdd }) {
-  return (
-    <View style={styles.row}>
-      <Image source={product.image} style={styles.image} />
-      <View style={styles.body}>
-        <Text style={styles.badge}>{product.badge}</Text>
-        <Text numberOfLines={2} style={styles.name}>{product.name}</Text>
-        <Text style={styles.meta}>{product.category} · ★ {product.rating} ({product.reviews})</Text>
-        <View style={styles.bottomRow}>
-          <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-          <Pressable onPress={() => onAdd(product)} style={styles.addButton}>
-            <Text style={styles.addText}>Add</Text>
-          </Pressable>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingVertical: 14, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#e5e7eb' },
-  image: { width: 118, height: 118, borderRadius: 10, backgroundColor: '#f3f4f6' },
-  body: { flex: 1, minWidth: 0, justifyContent: 'space-between' },
-  badge: { alignSelf: 'flex-start', fontSize: 11, fontWeight: '800', color: '#7c2d12', backgroundColor: '#ffedd5', paddingHorizontal: 7, paddingVertical: 4, borderRadius: 6 },
-  name: { marginTop: 6, fontSize: 16, lineHeight: 21, fontWeight: '700', color: '#111827' },
-  meta: { marginTop: 5, fontSize: 12, color: '#6b7280' },
-  bottomRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 9 },
-  price: { fontSize: 19, fontWeight: '900', color: '#111827' },
-  addButton: { minWidth: 74, alignItems: 'center', paddingVertical: 9, paddingHorizontal: 14, borderRadius: 18, backgroundColor: '#ffd814', borderWidth: 1, borderColor: '#f3c200' },
-  addText: { fontWeight: '800', color: '#111827' }
-});
+import { Image, StyleSheet, Text, View } from 'react-native';
+export default function ProductRow({product}){const stock=product.stock>20?'In stock':product.stock>0?`Only ${product.stock} left`:'Out of stock';return <View style={s.row}><Image source={{uri:product.thumbnail}} style={s.image}/><View style={s.body}><Text style={s.cat}>{product.category}</Text><Text numberOfLines={2} style={s.title}>{product.title}</Text><Text numberOfLines={2} style={s.desc}>{product.description}</Text><View style={s.meta}><Text style={s.rating}>★ {product.rating}</Text><Text style={s.stock}>{stock}</Text></View><View style={s.priceRow}><Text style={s.price}>${Number(product.price).toFixed(2)}</Text>{product.discountPercentage>0&&<Text style={s.discount}>{Math.round(product.discountPercentage)}% off</Text>}</View></View></View>}
+const s=StyleSheet.create({row:{flexDirection:'row',gap:12,padding:14,borderBottomWidth:1,borderBottomColor:'#e5e7eb',backgroundColor:'#fff'},image:{width:124,height:124,borderRadius:10,backgroundColor:'#f3f4f6'},body:{flex:1},cat:{fontSize:11,fontWeight:'900',color:'#146eb4',textTransform:'uppercase'},title:{marginTop:4,fontSize:16,lineHeight:21,fontWeight:'800'},desc:{marginTop:5,fontSize:12,lineHeight:17,color:'#6b7280'},meta:{marginTop:8,flexDirection:'row',gap:10},rating:{fontSize:12,fontWeight:'800',color:'#92400e'},stock:{fontSize:12,fontWeight:'700',color:'#047857'},priceRow:{marginTop:8,flexDirection:'row',alignItems:'baseline',gap:8},price:{fontSize:21,fontWeight:'900'},discount:{fontSize:12,fontWeight:'800',color:'#b91c1c'}});

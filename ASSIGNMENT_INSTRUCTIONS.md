@@ -1,96 +1,75 @@
-# Module 5 Assignment 2 — StayFinder: Persistent Hotel Booking Explorer
+# Module 6 Assignment 1 — Product Discovery: Live Marketplace API
 
 ## Objective
-Build a production-style hotel discovery and saved-stays application inspired by the structure and density of current travel-booking apps. The app must support three cities, locally persist saved hotels and the selected city, and use accurate real-world imagery for full credit.
+Convert a production-style mobile marketplace from local/static data into a connected application that requests live product data from a remote API. You will use `fetch()`, JSON, `async`/`await`, React state, `useEffect()`, `FlatList`, loading/error/empty states, retry behavior, and a separate API service file.
 
 ## Industry Scenario
-You have joined the mobile team for StayFinder, a travel-booking product. The starter interface and component structure are already approved. Your job is to complete local persistence and replace all course placeholders with accurate real-world imagery.
+You have joined the mobile commerce team for Northstar Market. The visual team already approved the interface. Your task is to connect the catalog to a remote API so the app no longer depends on a hard-coded product array.
 
-This repository is a continuing project. Keep it organized. In Module 8, you will return to this same application and add real location and permission features. Do not throw away or rebuild this repository after Module 5.
+## API Used
+`https://dummyjson.com/products?limit=30`
 
-## Required Cities
-- Houston, Texas
-- Chicago, Illinois
-- New York, New York
-
-## Real-Photo Requirement — Full Credit
-The starter contains placeholder images on purpose.
-
-For full credit you must replace:
-- all 3 city hero images;
-- all 6 hotel images.
-
-That is **9 real photos total**.
-
-Requirements:
-1. Each city image must accurately represent that city.
-2. Each hotel image must accurately represent the real hotel you choose.
-3. Update the hotel name/neighborhood data if you choose a different real hotel than the starter fictional name.
-4. Use images that are legally appropriate for coursework or clearly sourceable.
-5. Record source information in `src/data/photoSources.js`.
-6. Do not use AI-generated city or hotel images for this requirement.
-7. Do not use the same generic hotel image for multiple properties.
+The API returns an object containing a `products` array.
 
 ## Assignment Tasks
-1. Create branch `feature/saved-stays`.
-2. Complete `bookingStorage.js`.
-3. Restore saved hotels and selected city on startup.
-4. Persist city selection.
-5. Heart icon must save/unsave a hotel.
-6. Saved tab must display saved hotels.
-7. Remove one saved hotel and persist the removal.
-8. Clear All must remove only the saved-hotels key.
-9. Replace all 9 placeholder images with accurate real photos.
-10. Update `photoSources.js` for all 9 images.
-11. Preserve the supplied booking-style visual hierarchy. Do not convert it into generic giant cards or decorative AI-style blocks.
-12. Test persistence after refresh/restart.
-13. Keep the repository because Module 8 will extend it with location and permissions.
+1. Create branch `feature/live-product-api`.
+2. Run the starter with `npm install` and `npx expo start --web`.
+3. Complete `src/services/productApi.js`.
+4. Use `fetch()` to request the endpoint.
+5. Check `response.ok`.
+6. Throw an error for unsuccessful HTTP responses.
+7. Convert the body with `await response.json()`.
+8. Return only `data.products` from the service.
+9. Complete `loadProducts()` in `MarketplaceScreen.js`.
+10. Use `useEffect()` to request products when the screen starts.
+11. Store returned products in React state.
+12. Display remote data with `FlatList`.
+13. Preserve loading, error, empty, and data states.
+14. Make Try Again run the request again.
+15. Make Refresh perform a manual remote refresh.
+16. Search and category filters must work on downloaded data.
+17. Preserve the supplied dense production marketplace layout.
+18. Finish with clean Git status and meaningful commits.
+
+## Required Testing
+- Initial load: loading appears, then remote products display.
+- Search: use a real product term.
+- Category: filter the downloaded data.
+- Empty state: search a nonsense term.
+- Refresh: press Refresh and confirm another request completes.
+- Error/retry: temporarily change endpoint to `https://dummyjson.com/not-a-real-products-route`, verify error, restore endpoint, press Try Again.
 
 ## Required Git Commits
-Suggested checkpoints:
-- `Add booking persistence service`
-- `Restore saved hotels and selected city`
-- `Persist hotel save and remove actions`
-- `Add Houston real hotel and city imagery`
-- `Add Chicago real hotel and city imagery`
-- `Add New York real hotel and city imagery`
-- `Verify saved stays persistence`
+- `Connect product service to remote API`
+- `Load remote products on startup`
+- `Add loading error and retry states`
+- `Add live search and category filters`
+- `Add manual API refresh`
+- `Verify live marketplace request flow`
 
 ## APA 7 Reflection — 250–300 Words
-Explain:
-- why saved hotels and selected city should persist;
-- how `JSON.stringify()` and `JSON.parse()` are used;
-- how async/await appears in the app;
-- why image accuracy matters in a travel-booking interface;
-- how Git history will help when the same repository is extended with real location in Module 8.
+Explain what an API does, client vs server, why `fetch()` is asynchronous, what `response.json()` does, how loading/empty/error/data states work, one API problem you tested, and why API logic belongs in a service file.
 
 ## Screenshots to Upload in Blackboard
-Upload screenshots only. Do not submit a repository link.
-1. Houston screen with real city and hotel photos.
-2. Chicago screen with real city and hotel photos.
-3. New York screen with real city and hotel photos.
-4. Saved tab with at least three saved hotels.
-5. Saved hotels restored after refresh/restart.
-6. `bookingStorage.js` completed.
-7. `BookingScreen.js` showing startup restore logic.
-8. `photoSources.js` showing all 9 completed source records.
-9. Terminal showing clean `git status`.
-10. Terminal showing `git log --oneline --graph --decorate -10`.
-11. GitHub files on `main` after merge.
-12. Completed APA 7 reflection.
+**Do not submit a repository link.** Upload screenshots of: live marketplace, search results, category results, empty state, temporary error state, successful retry, completed `productApi.js`, `loadProducts()` + `useEffect()`, clean `git status`, `git log --oneline --graph --decorate -8`, GitHub files on `main`, and completed APA 7 reflection.
 
 ## 100-Point Rubric
 | Category | Points |
 |---|---:|
-| AsyncStorage save/load/remove + city persistence | 20 |
-| Saved hotel add/remove/clear behavior | 15 |
-| Startup restore, loading, error handling | 15 |
-| All 3 city photos are real, accurate, and credited | 10 |
-| All 6 hotel photos are real, accurate, and credited | 15 |
-| Booking-style production UI preserved | 10 |
-| Refresh/restart persistence verified | 5 |
-| Git branch, meaningful commits, clean main, repo preserved | 5 |
+| API service: fetch, response.ok, JSON, correct returned array | 20 |
+| Remote data loads into React state on startup | 15 |
+| Loading, error, retry, empty, and data states | 20 |
+| Search and category filtering | 10 |
+| Manual remote refresh | 10 |
+| Production marketplace UI preserved | 10 |
+| API logic separated in service layer | 5 |
+| Git branch, meaningful commits, clean main | 5 |
 | APA 7 reflection | 5 |
 | **Total** | **100** |
 
-**Important:** A working persistence solution with placeholder or inaccurate hotel/city images cannot earn full photo/UI credit.
+## References
+React useEffect: https://react.dev/reference/react/useEffect
+React useState: https://react.dev/reference/react/useState
+W3Schools Fetch API: https://www.w3schools.com/js/js_api_fetch.asp
+W3Schools JSON: https://www.w3schools.com/js/js_json.asp
+DummyJSON Products: https://dummyjson.com/docs/products
