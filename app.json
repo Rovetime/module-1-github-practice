@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "StreamBox",
-    "slug": "streambox-navigation",
+    "name": "MealDash",
+    "slug": "mealdash-navigation",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "streambox",
-    "userInterfaceStyle": "dark",
+    "scheme": "mealdash",
+    "userInterfaceStyle": "light",
     "plugins": [
       "expo-router"
     ],
