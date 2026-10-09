@@ -15,7 +15,7 @@ export default function HomeScreen() {
     setErrorMessage('');
 
     try {
-      // TODO 1: Request foreground location permission and save status.
+     const { status } = await Location.requestForegroundPermissionsAsync();
 
       // TODO 2: If permission is not granted, show a clear message and return.
 
