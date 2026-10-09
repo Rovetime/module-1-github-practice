@@ -1,12 +1,17 @@
 {
   "expo": {
-    "name": "MealDash",
-    "slug": "mealdash-navigation",
+    "name": "StayFinder",
+    "slug": "stayfinder-location",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "mealdash",
-    "userInterfaceStyle": "light",
+    "scheme": "stayfinder",
     "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "StayFinder uses your location to help identify nearby travel options."
+        }
+      ],
       "expo-router"
     ],
     "web": {
