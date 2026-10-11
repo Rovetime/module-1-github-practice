@@ -1,18 +1,18 @@
 {
   "expo": {
-    "name": "StayFinder",
-    "slug": "stayfinder-location",
+    "name": "CampusSafe",
+    "slug": "campussafe",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "stayfinder",
+    "scheme": "campussafe",
     "plugins": [
+      "expo-router",
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "StayFinder uses your location to help identify nearby travel options."
+          "locationWhenInUsePermission": "CampusSafe uses your location only when you choose to identify or share your current position."
         }
-      ],
-      "expo-router"
+      ]
     ],
     "web": {
       "bundler": "metro"
