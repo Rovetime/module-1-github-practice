@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   Linking,
@@ -24,27 +25,32 @@ export default function AssistScreen() {
     setErrorMessage('');
 
     try {
-      // TODO 1:
-      // Request foreground location permission.
-      // Save the returned status in permissionStatus.
+      // TODO 1: Request foreground location permission
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      setPermissionStatus(status);
 
-      // TODO 2:
-      // If permission is not granted:
-      // - show a clear message
-      // - stop this function with return
+      // TODO 2: Handle denied permission
+      if (status !== 'granted') {
+        setLocation(null);
+        setErrorMessage(
+          'Location permission was denied. You can try again or contact Campus Security without sharing your location.'
+        );
+        return;
+      }
 
-      // TODO 3:
-      // Request the current device position.
+      // TODO 3: Request the current device position
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
 
-      // TODO 4:
-      // Save the returned location with setLocation().
-    }
-    catch (error) {
+      // TODO 4: Save the returned location
+      setLocation(currentLocation);
+
+    } catch (error) {
       setErrorMessage(
         'CampusSafe could not determine your location. You can try again or contact campus security without sharing location.'
       );
-    }
-    finally {
+    } finally {
       setIsLocating(false);
     }
   }
@@ -143,7 +149,11 @@ export default function AssistScreen() {
 
         {errorMessage !== '' && (
           <View style={styles.errorBox}>
-            <Ionicons name="alert-circle-outline" size={19} color={colors.danger} />
+            <Ionicons
+              name="alert-circle-outline"
+              size={19}
+              color={colors.danger}
+            />
             <Text style={styles.errorText}>{errorMessage}</Text>
           </View>
         )}
@@ -343,7 +353,12 @@ const styles = StyleSheet.create({
     gap: 8,
     alignItems: 'flex-start',
   },
-  errorText: { color: colors.danger, flex: 1, lineHeight: 19, fontWeight: '700' },
+  errorText: {
+    color: colors.danger,
+    flex: 1,
+    lineHeight: 19,
+    fontWeight: '700',
+  },
   primaryButton: {
     backgroundColor: colors.blue,
     borderRadius: 14,
@@ -355,7 +370,11 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 16,
   },
-  primaryButtonText: { color: colors.paper, fontSize: 16, fontWeight: '900' },
+  primaryButtonText: {
+    color: colors.paper,
+    fontSize: 16,
+    fontWeight: '900',
+  },
   retryButton: {
     backgroundColor: '#274866',
     borderRadius: 13,
@@ -372,7 +391,11 @@ const styles = StyleSheet.create({
     padding: 20,
     marginTop: 16,
   },
-  securityHeader: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  securityHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
   securityIcon: {
     width: 48,
     height: 48,
@@ -382,9 +405,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   securityCopy: { flex: 1 },
-  securityTitle: { color: colors.ink, fontWeight: '900', fontSize: 19 },
+  securityTitle: {
+    color: colors.ink,
+    fontWeight: '900',
+    fontSize: 19,
+  },
   securityNumber: { color: colors.muted, marginTop: 2 },
-  securityText: { color: colors.muted, lineHeight: 21, marginTop: 14 },
+  securityText: {
+    color: colors.muted,
+    lineHeight: 21,
+    marginTop: 14,
+  },
   callButton: {
     backgroundColor: colors.goldSoft,
     borderRadius: 14,
@@ -412,6 +443,14 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   privacyCopy: { flex: 1 },
-  privacyTitle: { color: colors.teal, fontWeight: '900', fontSize: 16 },
-  privacyText: { color: colors.muted, lineHeight: 20, marginTop: 4 },
+  privacyTitle: {
+    color: colors.teal,
+    fontWeight: '900',
+    fontSize: 16,
+  },
+  privacyText: {
+    color: colors.muted,
+    lineHeight: 20,
+    marginTop: 4,
+  },
 });

@@ -1,3 +1,4 @@
+
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../styles/theme';
@@ -39,10 +40,18 @@ export default function TabsLayout() {
         },
       })}
     >
+      {/* CampusSafe navigation */}
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
       <Tabs.Screen name="assist" options={{ title: 'Assist' }} />
       <Tabs.Screen name="safety" options={{ title: 'Safety' }} />
       <Tabs.Screen name="profile" options={{ title: 'About' }} />
+
+      {/* Hide screens from previous assignments */}
+      <Tabs.Screen name="saved" options={{ href: null }} />
+      <Tabs.Screen name="browse" options={{ href: null }} />
+      <Tabs.Screen name="orders" options={{ href: null }} />
+      <Tabs.Screen name="search" options={{ href: null }} />
+      <Tabs.Screen name="account" options={{ href: null }} />
     </Tabs>
   );
 }
