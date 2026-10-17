@@ -1,19 +1,53 @@
-# Module 8 Assignment 2 — CampusSafe: Location and Security Assistance
+# Module 9 — Cloud Game Collection
 
-## Objective
+## Start Here
 
-Complete the supplied CampusSafe application so a user can request a current device location, see latitude and longitude, recover from location problems, and still access Campus Security when location is denied.
+This project is already designed for you.
 
-## The App Is Already Built
+The interface includes:
+- console-style dark layout
+- desktop navigation rail
+- mobile-friendly layout
+- search
+- genre filters
+- horizontal game rows
+- placeholder game covers
+- Firebase service files
+- SQLite service file
 
-The navigation, visual design, Campus Security panel, safety content, retry interface, and presentation screens are already supplied.
+Your job is to complete the database code, not rebuild the whole interface.
 
-Your programming work is intentionally focused on the location logic.
+## 1. Install and Run
+
+```bash
+npm install
+npx expo start --web
+```
+
+The app should run immediately with demo data.
+
+## 2. Firebase Setup
+
+Copy:
+
+```text
+.env.example
+```
+
+to:
+
+```text
+.env.local
+```
+
+Add your own Firebase project values after the `=` signs.
+
+## 3. Complete the TODO File
 
 Open:
 
 ```text
-src/app/(tabs)/assist.js
+src/services/gameRepository.js
 ```
 
 Search for:
@@ -22,63 +56,63 @@ Search for:
 TODO
 ```
 
-Complete the four TODO sections inside `handleGetLocation()`.
+There are four TODO sections:
 
-## Run the Project
-
-```bash
-npm install
-npx expo start --web
+```text
+TODO 1 — READ
+TODO 2 — CREATE
+TODO 3 — UPDATE
+TODO 4 — DELETE
 ```
 
-Use Expo Web for layout and code development.
+Complete them in order.
 
-For final location testing, run the project with Expo Go on a physical phone.
+Use the Module 9 Firebase lesson as your code reference.
 
-## What Your Code Must Do
+## 4. Do Not Change Everything
 
-The completed location function must:
+The UI already works.
 
-1. Request foreground location permission.
-2. Save the returned permission status.
-3. Stop safely when permission is denied.
-4. Request one current device position when permission is granted.
-5. Store the returned location with `setLocation()`.
+Focus on:
+- Firebase connection
+- Firestore CRUD
+- real game data
+- real cover art
+- SQLite local storage practice
 
-The supplied interface will then display the correct loading, success, denial, retry, and location states.
+## 5. SQLite
 
-## Git Checkpoints
+Open:
 
-Suggested commits:
-
-```bash
-git add .
-git commit -m "Add CampusSafe location permission"
+```text
+src/services/sqliteGames.js
 ```
 
-```bash
-git add .
-git commit -m "Retrieve current device position"
+The local database code is already supplied.
+
+Use it to practice:
+- opening SQLite
+- creating a table
+- saving a game locally
+- reading local games
+
+## 6. Real Games
+
+The starter artwork is only placeholder content.
+
+When instructed:
+- replace the fictional games with real games
+- use multiple genres
+- use clear, appropriately sourced cover artwork
+- preserve the console-style layout
+
+## Suggested Git Checkpoints
+
+```text
+Configure Firebase project
+Complete Firestore read
+Complete Firestore create
+Complete Firestore update and delete
+Add real game data and cover art
+Test SQLite local game storage
 ```
-
-```bash
-git add .
-git commit -m "Handle CampusSafe denied and retry states"
-```
-
-```bash
-git add .
-git commit -m "Verify CampusSafe physical device flow"
-```
-
-## Important
-
-Do not remove the Campus Security contact when location is denied.
-
-Do not redesign the supplied CampusSafe interface.
-
-The phone number in `src/config/security.js` is a demo value for coursework. It must be replaced with an institution-approved number before any live deployment or public presentation that represents the app as functional.
-
-Your Blackboard submission is one APA 7 document with your reflection and required Application Evidence screenshots.
-
-Do not submit a repository link.
